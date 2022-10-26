@@ -8,11 +8,11 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const makeSut = (): AxiosHttpClient => new AxiosHttpClient();
 
 describe("AxiosHttpClient", () => {
-  test("Should call axios with correct URL", async () => {
+  test("Should call axios with correct URL and Verb", async () => {
     const url = faker.internet.url();
     const sut = makeSut();
     await sut.post({ url });
 
-    expect(mockedAxios).toHaveBeenCalledWith(url);
+    expect(mockedAxios.post).toHaveBeenCalledWith(url);
   });
 });
