@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 
-import { Logo } from "@/presentation/components/atoms/Logo";
+import { Logo } from "@/presentation/atoms/Logo";
 
 import Styles from "./styles.module.scss";
 

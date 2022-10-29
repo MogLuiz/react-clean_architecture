@@ -1,9 +1,10 @@
 import React from "react";
 
-import { Spinner } from "@/presentation/components/atoms/Spinner";
-import { Footer } from "@/presentation/components/atoms/Footer";
+import { Spinner } from "@/presentation/atoms/Spinner";
+import { Footer } from "@/presentation/atoms/Footer";
+import { Input } from "@/presentation/atoms/Input";
 
-import { LoginHeader } from "@/presentation/components/molecules/LoginHeader";
+import { LoginHeader } from "@/presentation/molecules/LoginHeader";
 
 import Styles from "./styles.module.scss";
 
@@ -14,18 +15,10 @@ export const Login = () => {
 
       <form className={Styles.form}>
         <h2>Login</h2>
-        <div className={Styles.inputWrap}>
-          <input type="email" name="email" placeholder="Digite seu e-mail" />
-          <span className={Styles.status}>🔴</span>
-        </div>
-        <div className={Styles.inputWrap}>
-          <input
-            type="password"
-            name="password"
-            placeholder="Digite sua senha"
-          />
-          <span className={Styles.status}>🔴</span>
-        </div>
+
+        <Input type="email" name="email" placeholder="Digite seu e-mail" />
+        <Input type="password" name="password" placeholder="Digite sua senha" />
+
         <button className={Styles.submit} type="submit">
           Entrar
         </button>
