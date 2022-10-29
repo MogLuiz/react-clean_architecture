@@ -2,6 +2,7 @@ import React from "react";
 
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
+import { Button } from "@/presentation/atoms/Button";
 
 import { LoginHeader } from "@/presentation/molecules/LoginHeader";
 import { FormStatus } from "@/presentation/molecules/FormStatus";
@@ -19,10 +20,8 @@ export const Login = () => {
         <Input type="email" name="email" placeholder="Digite seu e-mail" />
         <Input type="password" name="password" placeholder="Digite sua senha" />
 
-        <button className={Styles.submit} type="submit">
-          Entrar
-        </button>
-        
+        <Button textButton="Entrar" className={Styles.submit} />
+
         <span className={Styles.link}>Criar conta</span>
         <FormStatus />
       </form>
