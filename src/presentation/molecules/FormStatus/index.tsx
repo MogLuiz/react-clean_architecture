@@ -4,9 +4,14 @@ import { Spinner } from "@/presentation/atoms/Spinner";
 
 import Styles from "./styles.module.scss";
 
-export const FormStatus = () => (
+type TFormStatusProps = {
+  isLoading: boolean;
+  errorMessage: string;
+};
+
+export const FormStatus = ({ isLoading, errorMessage }: TFormStatusProps) => (
   <div className={Styles.errorWrap}>
-    <Spinner className={Styles.spinner} />
-    <span className={Styles.error}>Erro</span>
+    {isLoading && <Spinner className={Styles.spinner} />}
+    {errorMessage && <span aria-label="error message" className={Styles.error}>{errorMessage}</span>}
   </div>
 );

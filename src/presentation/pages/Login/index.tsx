@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+
+import { useLoginForm } from "./hooks/useLoginForm";
 
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
@@ -10,6 +12,9 @@ import { FormStatus } from "@/presentation/molecules/FormStatus";
 import Styles from "./styles.module.scss";
 
 export const Login = () => {
+  const { isLoading, setIsLoading, errorMessage, setErrorMessage } =
+    useLoginForm();
+
   return (
     <div className={Styles.login}>
       <LoginHeader />
@@ -23,7 +28,7 @@ export const Login = () => {
         <Button textButton="Entrar" className={Styles.submit} />
 
         <span className={Styles.link}>Criar conta</span>
-        <FormStatus />
+        <FormStatus isLoading={isLoading} errorMessage={errorMessage} />
       </form>
 
       <Footer />
