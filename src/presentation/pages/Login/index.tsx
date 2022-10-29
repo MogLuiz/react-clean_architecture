@@ -1,10 +1,10 @@
 import React from "react";
 
-import { Spinner } from "@/presentation/atoms/Spinner";
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
 
 import { LoginHeader } from "@/presentation/molecules/LoginHeader";
+import { FormStatus } from "@/presentation/molecules/FormStatus";
 
 import Styles from "./styles.module.scss";
 
@@ -23,10 +23,8 @@ export const Login = () => {
           Entrar
         </button>
         <span className={Styles.link}>Criar conta</span>
-        <div className={Styles.errorWrap}>
-          <Spinner className={Styles.spinner} />
-          <span className={Styles.error}>Erro</span>
-        </div>
+
+        <FormStatus />
       </form>
 
       <Footer />
