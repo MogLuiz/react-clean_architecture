@@ -22,4 +22,14 @@ describe("<FormStatus/>", () => {
     expect(spinner).not.toBeInTheDocument();
     expect(errorMessage).not.toBeInTheDocument();
   });
+
+  test("should render spinner and error when props is passed", () => {
+    const { spinner, errorMessage } = factorySetupTestHelper({
+      errorMessage: "Erro 404",
+      isLoading: true,
+    });
+
+    expect(spinner).toBeInTheDocument();
+    expect(errorMessage).toBeInTheDocument();
+  });
 });
