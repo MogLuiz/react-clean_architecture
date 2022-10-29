@@ -1,6 +1,6 @@
 import React from "react";
 
-import Styles from "./spinner-styles.scss";
+import Styles from "./styles.module.scss";
 
 type TSpinnerProps = React.HTMLAttributes<HTMLElement>;
 
