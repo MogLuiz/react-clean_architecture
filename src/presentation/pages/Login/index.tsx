@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Spinner } from "@/presentation/components/atoms/Spinner";
+import { Footer } from "@/presentation/components/atoms/Footer";
 
 import { LoginHeader } from "@/presentation/components/molecules/LoginHeader";
 
@@ -35,7 +36,7 @@ export const Login = () => {
         </div>
       </form>
 
-      <footer className={Styles.footer} />
+      <Footer />
     </div>
   );
 };
