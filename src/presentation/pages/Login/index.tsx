@@ -1,17 +1,15 @@
 import React from "react";
 
 import { Spinner } from "@/presentation/components/atoms/Spinner";
-import { Logo } from "@/presentation/components/atoms/Logo";
+
+import { LoginHeader } from "@/presentation/components/molecules/LoginHeader";
 
 import Styles from "./styles.module.scss";
 
 export const Login = () => {
   return (
     <div className={Styles.login}>
-      <header className={Styles.header}>
-        <Logo />
-        <h1>4Dev - Enquetes para Programadores</h1>
-      </header>
+      <LoginHeader />
 
       <form className={Styles.form}>
         <h2>Login</h2>
