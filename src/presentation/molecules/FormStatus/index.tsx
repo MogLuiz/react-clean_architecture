@@ -4,7 +4,7 @@ import { Spinner } from "@/presentation/atoms/Spinner";
 
 import Styles from "./styles.module.scss";
 
-type TFormStatusProps = {
+export type TFormStatusProps = {
   isLoading: boolean;
   errorMessage: string;
 };
