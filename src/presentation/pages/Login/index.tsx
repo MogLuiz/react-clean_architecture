@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { useLoginForm } from "./hooks/useLoginForm";
 
@@ -25,7 +25,12 @@ export const Login = () => {
         <Input type="email" name="email" placeholder="Digite seu e-mail" />
         <Input type="password" name="password" placeholder="Digite sua senha" />
 
-        <Button textButton="Entrar" className={Styles.submit} />
+        <Button
+          data-testid="buttonFormSubmit"
+          textButton="Entrar"
+          disabled
+          className={Styles.submit}
+        />
 
         <span className={Styles.link}>Criar conta</span>
         <FormStatus isLoading={isLoading} errorMessage={errorMessage} />
