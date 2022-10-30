@@ -19,7 +19,7 @@ jest.mock("./hooks/useLoginForm", () => {
 
 describe("<FormStatus/>", () => {
   test("should start with initial state", () => {
-    const { debug } = render(<Login />);
+   render(<Login />);
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
 

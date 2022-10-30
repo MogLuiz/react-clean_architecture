@@ -11,4 +11,4 @@ const LoginHeaderComponent = () => (
   </header>
 );
 
-export const LoginHeader = memo(LoginHeaderComponent)
+export const LoginHeader = memo(LoginHeaderComponent);
