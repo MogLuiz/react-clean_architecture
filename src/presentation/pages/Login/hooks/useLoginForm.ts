@@ -1,8 +1,19 @@
 import { useState } from "react";
 
 export const useLoginForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [formState, setFormState] = useState({
+    isLoading: false,
+    errorMessage: "",
+    emailError: "Campo obrigatório",
+    passwordError: "Campo obrigatório",
+  });
 
-  return { isLoading, setIsLoading, errorMessage, setErrorMessage };
+  const handleChangeFormState = (
+    field: keyof typeof formState,
+    value: string | boolean
+  ) => {
+    setFormState((previous) => ({ ...previous, [field]: value }));
+  };
+
+  return { formState, handleChangeFormState };
 };
