@@ -19,9 +19,15 @@ jest.mock("./hooks/useLoginForm", () => {
   };
 });
 
+const factorySetupTestHelper = () => {
+  const utils = render(<Login />);
+
+  return { ...utils }
+}
+
 describe("<FormStatus/>", () => {
   test("should start with initial state", () => {
-    render(<Login />);
+    factorySetupTestHelper()
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
     const emailInputStatus = screen.getByTestId("email-input-status");
