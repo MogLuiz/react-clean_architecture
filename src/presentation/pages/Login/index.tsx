@@ -12,8 +12,10 @@ import { FormStatus } from "@/presentation/molecules/FormStatus";
 import Styles from "./styles.module.scss";
 
 export const Login = () => {
-  const { isLoading, setIsLoading, errorMessage, setErrorMessage } =
-    useLoginForm();
+  const {
+    formState: { errorMessage, isLoading, passwordError, emailError },
+    handleChangeFormState,
+  } = useLoginForm();
 
   return (
     <div className={Styles.login}>
@@ -22,8 +24,18 @@ export const Login = () => {
       <form className={Styles.form}>
         <h2>Login</h2>
 
-        <Input type="email" name="email" placeholder="Digite seu e-mail" />
-        <Input type="password" name="password" placeholder="Digite sua senha" />
+        <Input
+          type="email"
+          title={emailError}
+          name="email"
+          placeholder="Digite seu e-mail"
+        />
+        <Input
+          type="password"
+          title={passwordError}
+          name="password"
+          placeholder="Digite sua senha"
+        />
 
         <Button
           data-testid="buttonFormSubmit"
