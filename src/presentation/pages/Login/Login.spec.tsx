@@ -3,26 +3,34 @@ import { render, screen } from "@testing-library/react";
 
 import { Login } from ".";
 
-const setIsLoading = jest.fn();
-const setErrorMessage = jest.fn();
+const handleChangeFormState = jest.fn();
 
 jest.mock("./hooks/useLoginForm", () => {
   return {
     useLoginForm: () => ({
-      errorMessage: "",
-      isLoading: false,
-      setErrorMessage,
-      setIsLoading,
+      formState: {
+        errorMessage: "",
+        isLoading: false,
+        emailError: "Campo obrigatório",
+        passwordError: "Campo obrigatório",
+      },
+      handleChangeFormState,
     }),
   };
 });
 
 describe("<FormStatus/>", () => {
   test("should start with initial state", () => {
-   render(<Login />);
+    render(<Login />);
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
+    const emailInputStatus = screen.getByTestId("email-input-status");
+    const passwordInputStatus = screen.getByTestId("password-input-status");
 
-    expect(submitButton).toBeDisabled()
+    expect(emailInputStatus.title).toBe("Campo obrigatório");
+    expect(emailInputStatus.textContent).toBe("🔴");
+    expect(passwordInputStatus.title).toBe("Campo obrigatório");
+    expect(passwordInputStatus.textContent).toBe("🔴");
+    expect(submitButton).toBeDisabled();
   });
 });
