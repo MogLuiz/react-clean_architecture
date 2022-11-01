@@ -1,3 +1,4 @@
+import { useLoginForm } from "@/presentation/pages/Login/hooks/useLoginForm";
 import React from "react";
 
 import Styles from "./styles.module.scss";
@@ -13,7 +14,7 @@ export const Input = ({ title = "", ...rest }: TInputProps) => {
 
   return (
     <div className={Styles.inputWrap}>
-      <input {...rest} readOnly onFocus={enableInput} />
+      <input {...rest} data-testid={rest.name} readOnly onFocus={enableInput} />
       <span
         data-testid={`${rest.name}-input-status`}
         title={title}

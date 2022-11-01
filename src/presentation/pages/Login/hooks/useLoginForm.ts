@@ -4,6 +4,7 @@ export const useLoginForm = () => {
   const [formState, setFormState] = useState({
     isLoading: false,
     errorMessage: "",
+    email: "",
     emailError: "Campo obrigatório",
     passwordError: "Campo obrigatório",
   });
@@ -14,6 +15,8 @@ export const useLoginForm = () => {
   ) => {
     setFormState((previous) => ({ ...previous, [field]: value }));
   };
+
+  console.log(formState);
 
   return { formState, handleChangeFormState };
 };
