@@ -1,9 +1,28 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  cleanup,
+  RenderResult,
+  waitFor,
+} from "@testing-library/react";
+
+import { IValidation } from "@/presentation/protocols/validation";
 
 import { Login } from ".";
 
 const handleChangeFormState = jest.fn();
+
+class ValidationSpy implements IValidation {
+  errorMessage: string;
+  input: object;
+
+  validate(input: object): string {
+    this.input = input;
+    return this.errorMessage;
+  }
+}
 
 jest.mock("./hooks/useLoginForm", () => {
   return {
@@ -11,6 +30,7 @@ jest.mock("./hooks/useLoginForm", () => {
       formState: {
         errorMessage: "",
         isLoading: false,
+        email: "",
         emailError: "Campo obrigatório",
         passwordError: "Campo obrigatório",
       },
@@ -19,15 +39,22 @@ jest.mock("./hooks/useLoginForm", () => {
   };
 });
 
-const factorySetupTestHelper = () => {
-  const utils = render(<Login />);
+type factorySetupTestHelperTypes = {
+  validationSpy: ValidationSpy;
+} & RenderResult;
 
-  return { ...utils }
-}
+const factorySetupTestHelper = (): factorySetupTestHelperTypes => {
+  const validationSpy = new ValidationSpy();
+  const utils = render(<Login validation={validationSpy} />);
+
+  return { ...utils, validationSpy };
+};
 
 describe("<FormStatus/>", () => {
-  test("should start with initial state", () => {
-    factorySetupTestHelper()
+  afterEach(cleanup);
+
+  it("should start with initial state", () => {
+    factorySetupTestHelper();
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
     const emailInputStatus = screen.getByTestId("email-input-status");
@@ -38,5 +65,19 @@ describe("<FormStatus/>", () => {
     expect(passwordInputStatus.title).toBe("Campo obrigatório");
     expect(passwordInputStatus.textContent).toBe("🔴");
     expect(submitButton).toBeDisabled();
+  });
+
+  it("should call validation with correct email", () => {
+    const { validationSpy } = factorySetupTestHelper();
+
+    const emailInput = screen.getByLabelText("form email field");
+
+    fireEvent.input(emailInput, { target: { value: "any_email" } });
+
+    waitFor(() => {
+      expect(validationSpy.input).toEqual({
+        email: "any_email",
+      });
+    });
   });
 });
