@@ -46,6 +46,9 @@ export const Login = ({ validation }: TLoginprops) => {
           name="password"
           aria-label="form password field"
           placeholder="Digite sua senha"
+          onChange={(event) =>
+            validation?.validate("password", event.target.value)
+          }
         />
 
         <Button
