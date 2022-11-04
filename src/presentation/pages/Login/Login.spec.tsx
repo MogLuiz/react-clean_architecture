@@ -8,23 +8,11 @@ import {
   waitFor,
 } from "@testing-library/react";
 
-import { IValidation } from "@/presentation/protocols/validation";
+import { ValidationSpy } from "@/presentation/test";
 
 import { Login } from ".";
 
 const handleChangeFormState = jest.fn();
-
-class ValidationSpy implements IValidation {
-  errorMessage: string;
-  fieldName: string;
-  fieldValue: string;
-
-  validate(fieldName: string, fieldValue: string): string {
-    this.fieldName = fieldName;
-    this.fieldValue = fieldValue;
-    return this.errorMessage;
-  }
-}
 
 jest.mock("./hooks/useLoginForm", () => {
   return {
