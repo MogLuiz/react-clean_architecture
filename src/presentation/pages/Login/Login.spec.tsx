@@ -79,4 +79,15 @@ describe("<FormStatus/>", () => {
     expect(validationSpy.fieldName).toBe("email");
     expect(validationSpy.fieldValue).toBe("any_email");
   });
+
+  it("should call validation with correct password", () => {
+    const { validationSpy } = factorySetupTestHelper();
+
+    const passwordInput = screen.getByLabelText("form password field");
+
+    fireEvent.change(passwordInput, { target: { value: "any_password" } });
+
+    expect(validationSpy.fieldName).toBe("password");
+    expect(validationSpy.fieldValue).toBe("any_password");
+  });
 });
