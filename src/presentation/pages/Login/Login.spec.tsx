@@ -1,4 +1,5 @@
 import React from "react";
+import faker from "faker"
 import {
   render,
   screen,
@@ -61,21 +62,23 @@ describe("<FormStatus/>", () => {
     const { validationSpy } = factorySetupTestHelper();
 
     const emailInput = screen.getByLabelText("form email field");
+    const randomEmail = faker.internet.email()
 
-    fireEvent.change(emailInput, { target: { value: "any_email" } });
+    fireEvent.change(emailInput, { target: { value: randomEmail } });
 
     expect(validationSpy.fieldName).toBe("email");
-    expect(validationSpy.fieldValue).toBe("any_email");
+    expect(validationSpy.fieldValue).toBe(randomEmail);
   });
 
   it("should call validation with correct password", () => {
     const { validationSpy } = factorySetupTestHelper();
 
     const passwordInput = screen.getByLabelText("form password field");
+    const randomPassword = faker.internet.password()
 
-    fireEvent.change(passwordInput, { target: { value: "any_password" } });
+    fireEvent.change(passwordInput, { target: { value: randomPassword } });
 
     expect(validationSpy.fieldName).toBe("password");
-    expect(validationSpy.fieldValue).toBe("any_password");
+    expect(validationSpy.fieldValue).toBe(randomPassword);
   });
 });
