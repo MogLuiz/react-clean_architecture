@@ -16,10 +16,12 @@ const handleChangeFormState = jest.fn();
 
 class ValidationSpy implements IValidation {
   errorMessage: string;
-  input: object;
+  fieldName: string;
+  fieldValue: string;
 
-  validate(input: object): string {
-    this.input = input;
+  validate(fieldName: string, fieldValue: string): string {
+    this.fieldName = fieldName;
+    this.fieldValue = fieldValue;
     return this.errorMessage;
   }
 }
@@ -72,12 +74,9 @@ describe("<FormStatus/>", () => {
 
     const emailInput = screen.getByLabelText("form email field");
 
-    fireEvent.input(emailInput, { target: { value: "any_email" } });
+    fireEvent.change(emailInput, { target: { value: "any_email" } });
 
-    waitFor(() => {
-      expect(validationSpy.input).toEqual({
-        email: "any_email",
-      });
-    });
+    expect(validationSpy.fieldName).toBe("email");
+    expect(validationSpy.fieldValue).toBe("any_email");
   });
 });

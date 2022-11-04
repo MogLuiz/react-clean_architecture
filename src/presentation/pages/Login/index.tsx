@@ -23,10 +23,6 @@ export const Login = ({ validation }: TLoginprops) => {
     handleChangeFormState,
   } = useLoginForm();
 
-  useEffect(() => {
-    validation?.validate({ email: email });
-  }, [email]);
-
   return (
     <div className={Styles.login}>
       <LoginHeader />
@@ -41,7 +37,7 @@ export const Login = ({ validation }: TLoginprops) => {
           aria-label="form email field"
           placeholder="Digite seu e-mail"
           onChange={(event) =>
-            handleChangeFormState("email", event.target.value)
+            validation?.validate("email", event.target.value)
           }
         />
         <Input
