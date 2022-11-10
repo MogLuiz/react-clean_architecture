@@ -22,16 +22,24 @@ export const Login = ({ validation }: TLoginprops) => {
     isLoading: false,
     errorMessage: "",
     email: "",
+    password: "",
     emailError: "",
-    passwordError: "Campo obrigatório",
+    passwordError: "",
   });
 
   useEffect(() => {
-    setFormState({
-      ...formState,
+    setFormState((previous) => ({
+      ...previous,
       emailError: validation.validate("email", formState.email),
-    });
+    }));
   }, [formState.email]);
+
+  useEffect(() => {
+    setFormState((previous) => ({
+      ...previous,
+      passwordError: validation.validate("password", formState.password),
+    }))
+  }, [formState.password]);
 
   return (
     <div className={Styles.login}>
@@ -57,7 +65,7 @@ export const Login = ({ validation }: TLoginprops) => {
           aria-label="form password field"
           placeholder="Digite sua senha"
           onChange={(event) =>
-            validation?.validate("password", event.target.value)
+            setFormState({ ...formState, password: event.target.value })
           }
         />
 

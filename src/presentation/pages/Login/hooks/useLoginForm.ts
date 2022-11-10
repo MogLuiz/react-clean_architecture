@@ -5,6 +5,7 @@ export const useLoginForm = () => {
     isLoading: false,
     errorMessage: "",
     email: "",
+    password: "",
     emailError: "Campo obrigatório",
     passwordError: "Campo obrigatório",
   });
