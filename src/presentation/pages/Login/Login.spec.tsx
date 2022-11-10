@@ -136,5 +136,20 @@ describe("<FormStatus/>", () => {
     expect(passwordInputStatus.title).toBe('Tudo certo!');
     expect(passwordInputStatus.textContent).toBe("🟢");
   });
+
+  it("should enable submit button if form is valid", () => {
+    const { validationSpy } = factorySetupTestHelper();
+
+    validationSpy.errorMessage = null
+
+    const passwordInput = screen.getByLabelText("form password field");
+    const emailInput = screen.getByLabelText("form email field");
+    const submitButton = screen.getByRole("button", { name: /entrar/i });
+
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } });
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } });
+
+    expect(submitButton).not.toBeDisabled()
+  });
   
 });
