@@ -47,16 +47,16 @@ const factorySetupTestHelper = (): factorySetupTestHelperTypes => {
 describe("<FormStatus/>", () => {
   afterEach(cleanup);
 
-  it("should start with initial state", () => {
+  it("should start with initial state", async () => {
     const {validationSpy} = factorySetupTestHelper();
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
     const emailInputStatus = screen.getByTestId("email-input-status");
     const passwordInputStatus = screen.getByTestId("password-input-status");
 
-    expect(emailInputStatus.title).toBe(validationSpy.errorMessage);
+    await expect(emailInputStatus.title).toBe(validationSpy.errorMessage);
     expect(emailInputStatus.textContent).toBe("🔴");
-    expect(passwordInputStatus.title).toBe("Campo obrigatório");
+    expect(passwordInputStatus.title).toBe(validationSpy.errorMessage);
     expect(passwordInputStatus.textContent).toBe("🔴");
     expect(submitButton).toBeDisabled();
   });
@@ -95,5 +95,17 @@ describe("<FormStatus/>", () => {
 
     expect(emailInputStatus.title).toBe(validationSpy.errorMessage);
     expect(emailInputStatus.textContent).toBe("🔴");
+  });
+
+  it("should show password error if Validation fails", () => {
+    const { validationSpy } = factorySetupTestHelper();
+
+    const passwordInput = screen.getByLabelText("form password field");
+    const passwordInputStatus = screen.getByTestId("password-input-status");
+
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } });
+
+    expect(passwordInputStatus.title).toBe(validationSpy.errorMessage);
+    expect(passwordInputStatus.textContent).toBe("🔴");
   });
 });
