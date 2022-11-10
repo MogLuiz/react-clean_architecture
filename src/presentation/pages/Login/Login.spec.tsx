@@ -122,5 +122,19 @@ describe("<FormStatus/>", () => {
     expect(emailInputStatus.title).toBe('Tudo certo!');
     expect(emailInputStatus.textContent).toBe("🟢");
   });
+
+  it("should show valid password state if Validation succeeds", () => {
+    const { validationSpy } = factorySetupTestHelper();
+
+    validationSpy.errorMessage = null
+
+    const passwordInput = screen.getByLabelText("form password field");
+    const passwordInputStatus = screen.getByTestId("password-input-status");
+
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } });
+
+    expect(passwordInputStatus.title).toBe('Tudo certo!');
+    expect(passwordInputStatus.textContent).toBe("🟢");
+  });
   
 });
