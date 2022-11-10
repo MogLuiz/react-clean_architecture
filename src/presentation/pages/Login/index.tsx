@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useLoginForm } from "./hooks/useLoginForm";
 
@@ -18,10 +18,20 @@ type TLoginprops = {
 };
 
 export const Login = ({ validation }: TLoginprops) => {
-  const {
-    formState: { email, emailError, errorMessage, isLoading, passwordError },
-    handleChangeFormState,
-  } = useLoginForm();
+  const [formState, setFormState] = useState({
+    isLoading: false,
+    errorMessage: "",
+    email: "",
+    emailError: "",
+    passwordError: "Campo obrigatório",
+  });
+
+  useEffect(() => {
+    setFormState({
+      ...formState,
+      emailError: validation.validate("email", formState.email),
+    });
+  }, [formState.email]);
 
   return (
     <div className={Styles.login}>
@@ -32,17 +42,17 @@ export const Login = ({ validation }: TLoginprops) => {
 
         <Input
           type="email"
-          title={emailError}
+          title={formState.emailError}
           name="email"
           aria-label="form email field"
           placeholder="Digite seu e-mail"
           onChange={(event) =>
-            validation?.validate("email", event.target.value)
+            setFormState({ ...formState, email: event.target.value })
           }
         />
         <Input
           type="password"
-          title={passwordError}
+          title={formState.passwordError}
           name="password"
           aria-label="form password field"
           placeholder="Digite sua senha"
@@ -59,7 +69,10 @@ export const Login = ({ validation }: TLoginprops) => {
         />
 
         <span className={Styles.link}>Criar conta</span>
-        <FormStatus isLoading={isLoading} errorMessage={errorMessage} />
+        <FormStatus
+          isLoading={formState.isLoading}
+          errorMessage={formState.errorMessage}
+        />
       </form>
 
       <Footer />

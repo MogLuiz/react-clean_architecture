@@ -1,4 +1,3 @@
-import { useLoginForm } from "@/presentation/pages/Login/hooks/useLoginForm";
 import React from "react";
 
 import Styles from "./styles.module.scss";

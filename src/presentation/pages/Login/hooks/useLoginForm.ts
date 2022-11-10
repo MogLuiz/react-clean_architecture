@@ -16,7 +16,5 @@ export const useLoginForm = () => {
     setFormState((previous) => ({ ...previous, [field]: value }));
   };
 
-  console.log(formState);
-
   return { formState, handleChangeFormState };
 };
