@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { useLoginForm } from "./hooks/useLoginForm";
-
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
 import { Button } from "@/presentation/atoms/Button";
@@ -30,16 +28,18 @@ export const Login = ({ validation }: TLoginprops) => {
   useEffect(() => {
     setFormState((previous) => ({
       ...previous,
-      emailError: validation.validate("email", formState.email),
+      emailError: validation?.validate("email", formState.email),
     }));
   }, [formState.email]);
 
   useEffect(() => {
     setFormState((previous) => ({
       ...previous,
-      passwordError: validation.validate("password", formState.password),
-    }))
+      passwordError: validation?.validate("password", formState.password),
+    }));
   }, [formState.password]);
+
+  const isButtonFormDisable = formState.emailError || formState.passwordError
 
   return (
     <div className={Styles.login}>
@@ -72,7 +72,7 @@ export const Login = ({ validation }: TLoginprops) => {
         <Button
           data-testid="buttonFormSubmit"
           textButton="Entrar"
-          disabled
+          disabled={!!isButtonFormDisable}
           className={Styles.submit}
         />
 
