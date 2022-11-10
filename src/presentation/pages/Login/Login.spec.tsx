@@ -108,4 +108,19 @@ describe("<FormStatus/>", () => {
     expect(passwordInputStatus.title).toBe(validationSpy.errorMessage);
     expect(passwordInputStatus.textContent).toBe("🔴");
   });
+
+  it("should show valid email state if Validation succeeds", () => {
+    const { validationSpy } = factorySetupTestHelper();
+
+    validationSpy.errorMessage = null
+
+    const emailInput = screen.getByLabelText("form email field");
+    const emailInputStatus = screen.getByTestId("email-input-status");
+
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } });
+
+    expect(emailInputStatus.title).toBe('Tudo certo!');
+    expect(emailInputStatus.textContent).toBe("🟢");
+  });
+  
 });
