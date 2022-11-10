@@ -1,12 +1,11 @@
 import React from "react";
-import faker from "faker"
+import faker from "faker";
 import {
   render,
   screen,
   fireEvent,
   cleanup,
   RenderResult,
-  waitFor,
 } from "@testing-library/react";
 
 import { ValidationSpy } from "@/presentation/test";
@@ -14,6 +13,7 @@ import { ValidationSpy } from "@/presentation/test";
 import { Login } from ".";
 
 const handleChangeFormState = jest.fn();
+const setFormState = jest.fn();
 
 jest.mock("./hooks/useLoginForm", () => {
   return {
@@ -26,6 +26,7 @@ jest.mock("./hooks/useLoginForm", () => {
         passwordError: "Campo obrigatório",
       },
       handleChangeFormState,
+      setFormState,
     }),
   };
 });
@@ -36,6 +37,8 @@ type factorySetupTestHelperTypes = {
 
 const factorySetupTestHelper = (): factorySetupTestHelperTypes => {
   const validationSpy = new ValidationSpy();
+  validationSpy.errorMessage = faker.random.words();
+
   const utils = render(<Login validation={validationSpy} />);
 
   return { ...utils, validationSpy };
@@ -45,13 +48,13 @@ describe("<FormStatus/>", () => {
   afterEach(cleanup);
 
   it("should start with initial state", () => {
-    factorySetupTestHelper();
+    const {validationSpy} = factorySetupTestHelper();
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
     const emailInputStatus = screen.getByTestId("email-input-status");
     const passwordInputStatus = screen.getByTestId("password-input-status");
 
-    expect(emailInputStatus.title).toBe("Campo obrigatório");
+    expect(emailInputStatus.title).toBe(validationSpy.errorMessage);
     expect(emailInputStatus.textContent).toBe("🔴");
     expect(passwordInputStatus.title).toBe("Campo obrigatório");
     expect(passwordInputStatus.textContent).toBe("🔴");
@@ -62,7 +65,7 @@ describe("<FormStatus/>", () => {
     const { validationSpy } = factorySetupTestHelper();
 
     const emailInput = screen.getByLabelText("form email field");
-    const randomEmail = faker.internet.email()
+    const randomEmail = faker.internet.email();
 
     fireEvent.change(emailInput, { target: { value: randomEmail } });
 
@@ -74,11 +77,23 @@ describe("<FormStatus/>", () => {
     const { validationSpy } = factorySetupTestHelper();
 
     const passwordInput = screen.getByLabelText("form password field");
-    const randomPassword = faker.internet.password()
+    const randomPassword = faker.internet.password();
 
     fireEvent.change(passwordInput, { target: { value: randomPassword } });
 
     expect(validationSpy.fieldName).toBe("password");
     expect(validationSpy.fieldValue).toBe(randomPassword);
+  });
+
+  it("should show email error if Validation fails", () => {
+    const { validationSpy } = factorySetupTestHelper();
+
+    const emailInput = screen.getByLabelText("form email field");
+    const emailInputStatus = screen.getByTestId("email-input-status");
+
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } });
+
+    expect(emailInputStatus.title).toBe(validationSpy.errorMessage);
+    expect(emailInputStatus.textContent).toBe("🔴");
   });
 });
