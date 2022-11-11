@@ -12,8 +12,6 @@ import { ValidationSpy, AuthenticationSpy } from "@/presentation/test";
 
 import { Login } from ".";
 
-
-
 const handleChangeFormState = jest.fn();
 const setFormState = jest.fn();
 
@@ -32,8 +30,6 @@ jest.mock("./hooks/useLoginForm", () => {
     }),
   };
 });
-
-
 
 type TFactorySetupTestHelperTypes = {
   validationSpy: ValidationSpy;
@@ -58,6 +54,38 @@ const factorySetupTestHelper = (
   return { ...utils, validationSpy, authenticationSpy };
 };
 
+const populateEmailField = (email = faker.internet.email()): void => {
+  const emailInput = screen.getByLabelText("form email field");
+  fireEvent.input(emailInput, { target: { value: email } });
+};
+
+const populatePasswordField = (password = faker.internet.password()): void => {
+  const passwordInput = screen.getByLabelText("form password field");
+  fireEvent.input(passwordInput, { target: { value: password } });
+};
+
+const simulateValidSubmit = (
+  email = faker.internet.email(),
+  password = faker.internet.password()
+): void => {
+  const submitButton = screen.getByRole("button", { name: /entrar/i });
+
+  populateEmailField(email);
+  populatePasswordField(password);
+
+  fireEvent.click(submitButton);
+};
+
+const simulateStatusForField = (
+  fieldName: "email" | "password",
+  validationError?: string
+): void => {
+  const passwordInputStatus = screen.getByTestId(`${fieldName}-input-status`);
+
+  expect(passwordInputStatus.title).toBe(validationError || "Tudo certo!");
+  expect(passwordInputStatus.textContent).toBe(validationError ? "🔴" : "🟢");
+};
+
 describe("<FormStatus/>", () => {
   afterEach(cleanup);
 
@@ -66,13 +94,10 @@ describe("<FormStatus/>", () => {
     factorySetupTestHelper({ validationError });
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
-    const emailInputStatus = screen.getByTestId("email-input-status");
-    const passwordInputStatus = screen.getByTestId("password-input-status");
 
-    expect(emailInputStatus.title).toBe(validationError);
-    expect(emailInputStatus.textContent).toBe("🔴");
-    expect(passwordInputStatus.title).toBe(validationError);
-    expect(passwordInputStatus.textContent).toBe("🔴");
+    simulateStatusForField("email", validationError);
+    simulateStatusForField("password", validationError);
+
     expect(submitButton).toBeDisabled();
   });
 
@@ -80,10 +105,9 @@ describe("<FormStatus/>", () => {
     const { validationSpy } = factorySetupTestHelper();
     validationSpy.errorMessage = faker.random.words();
 
-    const emailInput = screen.getByLabelText("form email field");
     const randomEmail = faker.internet.email();
 
-    fireEvent.change(emailInput, { target: { value: randomEmail } });
+    populateEmailField(randomEmail);
 
     expect(validationSpy.fieldName).toBe("email");
     expect(validationSpy.fieldValue).toBe(randomEmail);
@@ -93,10 +117,9 @@ describe("<FormStatus/>", () => {
     const { validationSpy } = factorySetupTestHelper();
     validationSpy.errorMessage = faker.random.words();
 
-    const passwordInput = screen.getByLabelText("form password field");
     const randomPassword = faker.internet.password();
 
-    fireEvent.change(passwordInput, { target: { value: randomPassword } });
+    populatePasswordField(randomPassword);
 
     expect(validationSpy.fieldName).toBe("password");
     expect(validationSpy.fieldValue).toBe(randomPassword);
@@ -106,67 +129,40 @@ describe("<FormStatus/>", () => {
     const validationError = faker.random.words();
     factorySetupTestHelper({ validationError });
 
-    const emailInput = screen.getByLabelText("form email field");
-    const emailInputStatus = screen.getByTestId("email-input-status");
-
-    fireEvent.input(emailInput, { target: { value: faker.internet.email() } });
-
-    expect(emailInputStatus.title).toBe(validationError);
-    expect(emailInputStatus.textContent).toBe("🔴");
+    populateEmailField();
+    simulateStatusForField("email", validationError);
   });
 
   it("should show password error if Validation fails", () => {
     const validationError = faker.random.words();
     factorySetupTestHelper({ validationError });
 
-    const passwordInput = screen.getByLabelText("form password field");
-    const passwordInputStatus = screen.getByTestId("password-input-status");
-
-    fireEvent.input(passwordInput, {
-      target: { value: faker.internet.password() },
-    });
-
-    expect(passwordInputStatus.title).toBe(validationError);
-    expect(passwordInputStatus.textContent).toBe("🔴");
+    populatePasswordField();
+    simulateStatusForField("password", validationError);
   });
 
   it("should show valid email state if Validation succeeds", () => {
     factorySetupTestHelper();
 
-    const emailInput = screen.getByLabelText("form email field");
-    const emailInputStatus = screen.getByTestId("email-input-status");
-
-    fireEvent.input(emailInput, { target: { value: faker.internet.email() } });
-
-    expect(emailInputStatus.title).toBe("Tudo certo!");
-    expect(emailInputStatus.textContent).toBe("🟢");
+    populateEmailField();
+    simulateStatusForField("email");
   });
 
   it("should show valid password state if Validation succeeds", () => {
     factorySetupTestHelper();
 
-    const passwordInput = screen.getByLabelText("form password field");
-    const passwordInputStatus = screen.getByTestId("password-input-status");
+    populatePasswordField();
 
-    fireEvent.input(passwordInput, {
-      target: { value: faker.internet.password() },
-    });
-
-    expect(passwordInputStatus.title).toBe("Tudo certo!");
-    expect(passwordInputStatus.textContent).toBe("🟢");
+    simulateStatusForField("password");
   });
 
   it("should enable submit button if form is valid", () => {
     factorySetupTestHelper();
 
-    const passwordInput = screen.getByLabelText("form password field");
-    const emailInput = screen.getByLabelText("form email field");
     const submitButton = screen.getByRole("button", { name: /entrar/i });
 
-    fireEvent.input(emailInput, { target: { value: faker.internet.email() } });
-    fireEvent.input(passwordInput, {
-      target: { value: faker.internet.password() },
-    });
+    populateEmailField();
+    populatePasswordField();
 
     expect(submitButton).not.toBeDisabled();
   });
@@ -174,15 +170,7 @@ describe("<FormStatus/>", () => {
   it("should show spinner on submit", () => {
     factorySetupTestHelper();
 
-    const passwordInput = screen.getByLabelText("form password field");
-    const emailInput = screen.getByLabelText("form email field");
-    const submitButton = screen.getByRole("button", { name: /entrar/i });
-
-    fireEvent.input(emailInput, { target: { value: faker.internet.email() } });
-    fireEvent.input(passwordInput, {
-      target: { value: faker.internet.password() },
-    });
-    fireEvent.click(submitButton);
+    simulateValidSubmit();
 
     expect(screen.getByTestId("spinner")).toBeTruthy();
   });
@@ -193,15 +181,7 @@ describe("<FormStatus/>", () => {
     const email = faker.internet.email();
     const password = faker.internet.password();
 
-    const passwordInput = screen.getByLabelText("form password field");
-    const emailInput = screen.getByLabelText("form email field");
-    const submitButton = screen.getByRole("button", { name: /entrar/i });
-
-    fireEvent.input(emailInput, { target: { value: email } });
-    fireEvent.input(passwordInput, {
-      target: { value: password },
-    });
-    fireEvent.click(submitButton);
+    simulateValidSubmit(email, password);
 
     expect(authenticationSpy.params).toEqual({
       email,
