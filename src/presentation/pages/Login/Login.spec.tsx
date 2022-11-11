@@ -12,6 +12,10 @@ import { ValidationSpy } from "@/presentation/test";
 
 import { Login } from ".";
 
+import { Authentication, AuthenticationParams } from "@/domain/usecases";
+import { AccountModel } from "@/domain/models";
+import { mockAccountModel } from "@/domain/test";
+
 const handleChangeFormState = jest.fn();
 const setFormState = jest.fn();
 
@@ -31,8 +35,19 @@ jest.mock("./hooks/useLoginForm", () => {
   };
 });
 
+class AuthenticationSpy implements Authentication {
+  account = mockAccountModel();
+  params: AuthenticationParams;
+
+  async auth(params: AuthenticationParams): Promise<AccountModel> {
+    this.params = params;
+    return Promise.resolve(this.account);
+  }
+}
+
 type TFactorySetupTestHelperTypes = {
   validationSpy: ValidationSpy;
+  authenticationSpy: AuthenticationSpy;
 } & RenderResult;
 
 type TFactorySetupTestHelperParams = {
@@ -43,11 +58,14 @@ const factorySetupTestHelper = (
   params?: TFactorySetupTestHelperParams
 ): TFactorySetupTestHelperTypes => {
   const validationSpy = new ValidationSpy();
+  const authenticationSpy = new AuthenticationSpy();
   validationSpy.errorMessage = params?.validationError;
 
-  const utils = render(<Login validation={validationSpy} />);
+  const utils = render(
+    <Login validation={validationSpy} authentication={authenticationSpy} />
+  );
 
-  return { ...utils, validationSpy };
+  return { ...utils, validationSpy, authenticationSpy };
 };
 
 describe("<FormStatus/>", () => {
@@ -169,14 +187,35 @@ describe("<FormStatus/>", () => {
     const passwordInput = screen.getByLabelText("form password field");
     const emailInput = screen.getByLabelText("form email field");
     const submitButton = screen.getByRole("button", { name: /entrar/i });
-   
 
     fireEvent.input(emailInput, { target: { value: faker.internet.email() } });
     fireEvent.input(passwordInput, {
       target: { value: faker.internet.password() },
     });
-    fireEvent.click(submitButton)
+    fireEvent.click(submitButton);
 
-    expect(screen.getByTestId('spinner')).toBeTruthy()
+    expect(screen.getByTestId("spinner")).toBeTruthy();
+  });
+
+  it("should call Authentication with correct values", () => {
+    const { authenticationSpy } = factorySetupTestHelper();
+
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+
+    const passwordInput = screen.getByLabelText("form password field");
+    const emailInput = screen.getByLabelText("form email field");
+    const submitButton = screen.getByRole("button", { name: /entrar/i });
+
+    fireEvent.input(emailInput, { target: { value: email } });
+    fireEvent.input(passwordInput, {
+      target: { value: password },
+    });
+    fireEvent.click(submitButton);
+
+    expect(authenticationSpy.params).toEqual({
+      email,
+      password,
+    });
   });
 });
