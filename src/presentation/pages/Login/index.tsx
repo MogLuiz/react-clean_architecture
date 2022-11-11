@@ -45,6 +45,7 @@ export const Login = ({ validation, authentication }: TLoginprops) => {
 
   const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    if (formState.isLoading) return;
     setFormState((previous) => ({ ...previous, isLoading: true }));
     authentication.auth({
       email: formState.email,
