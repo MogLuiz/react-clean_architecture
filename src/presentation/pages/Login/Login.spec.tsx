@@ -188,4 +188,13 @@ describe("<FormStatus/>", () => {
       password,
     });
   });
+
+  it("should call Authentication only once", () => {
+    const { authenticationSpy } = factorySetupTestHelper();
+
+    simulateValidSubmit();
+    simulateValidSubmit();
+
+    expect(authenticationSpy.callsCount).toBe(1);
+  });
 });
