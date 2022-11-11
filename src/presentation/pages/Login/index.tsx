@@ -39,13 +39,18 @@ export const Login = ({ validation }: TLoginprops) => {
     }));
   }, [formState.password]);
 
-  const isButtonFormDisable = formState.emailError || formState.passwordError
+  const isButtonFormDisable = formState.emailError || formState.passwordError;
+
+  const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    setFormState((previous) => ({ ...previous, isLoading: true }));
+  };
 
   return (
     <div className={Styles.login}>
       <LoginHeader />
 
-      <form className={Styles.form}>
+      <form className={Styles.form} onSubmit={handleSubmitForm}>
         <h2>Login</h2>
 
         <Input
