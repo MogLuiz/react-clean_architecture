@@ -197,4 +197,17 @@ describe("<FormStatus/>", () => {
 
     expect(authenticationSpy.callsCount).toBe(1);
   });
+
+  it("should not call Authentication if form is invalid", () => {
+    const validationError = faker.random.words();
+    const { authenticationSpy } = factorySetupTestHelper({ validationError });
+
+    const form = screen.getByRole("form");
+
+    populateEmailField();
+
+    fireEvent.submit(form);
+
+    expect(authenticationSpy.callsCount).toBe(0);
+  });
 });
