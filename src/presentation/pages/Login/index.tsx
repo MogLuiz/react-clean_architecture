@@ -7,15 +7,17 @@ import { Button } from "@/presentation/atoms/Button";
 import { LoginHeader } from "@/presentation/molecules/LoginHeader";
 import { FormStatus } from "@/presentation/molecules/FormStatus";
 
+import { Authentication } from "@/domain/usecases";
 import { IValidation } from "@/presentation/protocols/validation";
 
 import Styles from "./styles.module.scss";
 
 type TLoginprops = {
   validation?: IValidation;
+  authentication?: Authentication;
 };
 
-export const Login = ({ validation }: TLoginprops) => {
+export const Login = ({ validation, authentication }: TLoginprops) => {
   const [formState, setFormState] = useState({
     isLoading: false,
     errorMessage: "",
@@ -44,6 +46,10 @@ export const Login = ({ validation }: TLoginprops) => {
   const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     setFormState((previous) => ({ ...previous, isLoading: true }));
+    authentication.auth({
+      email: formState.email,
+      password: formState.password,
+    });
   };
 
   return (
