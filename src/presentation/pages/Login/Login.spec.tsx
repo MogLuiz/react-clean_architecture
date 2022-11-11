@@ -162,4 +162,21 @@ describe("<FormStatus/>", () => {
 
     expect(submitButton).not.toBeDisabled();
   });
+
+  it("should show spinner on submit", () => {
+    factorySetupTestHelper();
+
+    const passwordInput = screen.getByLabelText("form password field");
+    const emailInput = screen.getByLabelText("form email field");
+    const submitButton = screen.getByRole("button", { name: /entrar/i });
+   
+
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } });
+    fireEvent.input(passwordInput, {
+      target: { value: faker.internet.password() },
+    });
+    fireEvent.click(submitButton)
+
+    expect(screen.getByTestId('spinner')).toBeTruthy()
+  });
 });
