@@ -12,6 +12,6 @@ export type TFormStatusProps = {
 export const FormStatus = ({ isLoading, errorMessage }: TFormStatusProps) => (
   <div className={Styles.errorWrap}>
     {isLoading && <Spinner className={Styles.spinner} />}
-    {errorMessage && <span aria-label="error message" className={Styles.error}>{errorMessage}</span>}
+     <span aria-label="error message" data-testid="main-error" className={Styles.error}>{errorMessage}</span>
   </div>
 );

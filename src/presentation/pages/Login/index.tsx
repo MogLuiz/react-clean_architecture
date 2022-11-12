@@ -45,16 +45,25 @@ export const Login = ({ validation, authentication }: TLoginprops) => {
   const isInvalidForm =
     formState.isLoading || formState.emailError || formState.passwordError;
 
-  const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmitForm = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
-    if (isInvalidForm) return;
-    setFormState((previous) => ({ ...previous, isLoading: true }));
-    authentication.auth({
-      email: formState.email,
-      password: formState.password,
-    });
+    try {
+      if (isInvalidForm) return;
+      setFormState((previous) => ({ ...previous, isLoading: true }));
+      await authentication.auth({
+        email: formState.email,
+        password: formState.password,
+      });
+    } catch (error) {
+      setFormState({
+        ...formState,
+        isLoading: false,
+        errorMessage: error.message,
+      });
+    }
   };
-
   return (
     <div className={Styles.login}>
       <LoginHeader />
@@ -85,6 +94,7 @@ export const Login = ({ validation, authentication }: TLoginprops) => {
 
         <Button
           data-testid="buttonFormSubmit"
+          type="submit"
           textButton="Entrar"
           disabled={!!isButtonFormDisable}
           className={Styles.submit}
