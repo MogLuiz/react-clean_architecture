@@ -6,7 +6,10 @@ import {
   fireEvent,
   cleanup,
   RenderResult,
+  waitFor,
 } from "@testing-library/react";
+
+import { InvalidCredentialsError } from "@/domain/errors";
 
 import { ValidationSpy, AuthenticationSpy } from "@/presentation/test";
 
@@ -203,11 +206,27 @@ describe("<FormStatus/>", () => {
     const { authenticationSpy } = factorySetupTestHelper({ validationError });
 
     const form = screen.getByRole("form");
-
     populateEmailField();
-
     fireEvent.submit(form);
 
     expect(authenticationSpy.callsCount).toBe(0);
+  });
+
+  it("should present error if Authentication fails", async () => {
+    const { authenticationSpy } = factorySetupTestHelper();
+
+    const error = new InvalidCredentialsError();
+    jest
+      .spyOn(authenticationSpy, "auth")
+      .mockReturnValueOnce(Promise.reject(error));
+
+    simulateValidSubmit();
+    
+    const mainError = screen.getByTestId("main-error");
+
+    await waitFor(() => {
+      expect(mainError.textContent).toBe(error.message);
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
+    });
   });
 });
