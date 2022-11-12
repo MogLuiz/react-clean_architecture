@@ -52,10 +52,11 @@ export const Login = ({ validation, authentication }: TLoginprops) => {
     try {
       if (isInvalidForm) return;
       setFormState((previous) => ({ ...previous, isLoading: true }));
-      await authentication.auth({
+      const account = await authentication.auth({
         email: formState.email,
         password: formState.password,
       });
+      localStorage.setItem('accessToken', account.accessToken)
     } catch (error) {
       setFormState({
         ...formState,
