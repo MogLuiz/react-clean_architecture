@@ -8,6 +8,7 @@ import {
   RenderResult,
   waitFor,
 } from "@testing-library/react";
+import 'jest-localstorage-mock'
 
 import { InvalidCredentialsError } from "@/domain/errors";
 
@@ -91,6 +92,9 @@ const simulateStatusForField = (
 
 describe("<FormStatus/>", () => {
   afterEach(cleanup);
+  beforeEach(() => {
+    localStorage.clear()
+  })
 
   it("should start with initial state", async () => {
     const validationError = faker.random.words();
@@ -221,12 +225,25 @@ describe("<FormStatus/>", () => {
       .mockReturnValueOnce(Promise.reject(error));
 
     simulateValidSubmit();
-    
+
     const mainError = screen.getByTestId("main-error");
 
     await waitFor(() => {
       expect(mainError.textContent).toBe(error.message);
       expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
     });
+  });
+
+  it("should add accessToken to localstorage on success", async () => {
+    const { authenticationSpy } = factorySetupTestHelper();
+
+    simulateValidSubmit();
+
+    await waitFor(() =>
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "accessToken",
+        authenticationSpy.account.accessToken
+      )
+    );
   });
 });
