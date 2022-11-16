@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
@@ -19,6 +19,7 @@ type TLoginprops = {
 };
 
 export const Login = ({ validation, authentication }: TLoginprops) => {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     isLoading: false,
     errorMessage: "",
@@ -57,7 +58,8 @@ export const Login = ({ validation, authentication }: TLoginprops) => {
         email: formState.email,
         password: formState.password,
       });
-      localStorage.setItem('accessToken', account.accessToken)
+      localStorage.setItem("accessToken", account.accessToken);
+      navigate("/", { replace: true });
     } catch (error) {
       setFormState({
         ...formState,
@@ -102,7 +104,9 @@ export const Login = ({ validation, authentication }: TLoginprops) => {
           className={Styles.submit}
         />
 
-        <Link to="/signup" className={Styles.link}>Criar conta</Link>
+        <Link to="/signup" className={Styles.link}>
+          Criar conta
+        </Link>
         <FormStatus
           isLoading={formState.isLoading}
           errorMessage={formState.errorMessage}
