@@ -46,7 +46,7 @@ type TFactorySetupTestHelperParams = {
   validationError: string;
 };
 
-const history = createMemoryHistory();
+const history = createMemoryHistory({initialEntries: ['/login']});
 
 const factorySetupTestHelper = (
   params?: TFactorySetupTestHelperParams
@@ -245,12 +245,14 @@ describe("<FormStatus/>", () => {
 
     simulateValidSubmit();
 
-    await waitFor(() =>
+    await waitFor(() => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "accessToken",
         authenticationSpy.account.accessToken
-      )
-    );
+      );
+      expect(history.index).toBe(0);
+      expect(history.location.pathname).toBe("/");
+    });
   });
 
   it("should go to signup page", () => {
@@ -261,7 +263,7 @@ describe("<FormStatus/>", () => {
     });
     fireEvent.click(createAccountLinkButton);
 
-    expect(history.index).toBe(1)
+    expect(history.index).toBe(1);
     expect(history.location.pathname).toBe("/signup");
   });
 });
