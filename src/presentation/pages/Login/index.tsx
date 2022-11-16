@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
@@ -101,7 +102,7 @@ export const Login = ({ validation, authentication }: TLoginprops) => {
           className={Styles.submit}
         />
 
-        <span className={Styles.link}>Criar conta</span>
+        <Link to="/signup" className={Styles.link}>Criar conta</Link>
         <FormStatus
           isLoading={formState.isLoading}
           errorMessage={formState.errorMessage}
