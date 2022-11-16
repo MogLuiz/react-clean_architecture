@@ -1,4 +1,6 @@
 import React from "react";
+import { createMemoryHistory } from "history";
+import { Router } from "react-router-dom";
 import faker from "faker";
 import {
   render,
@@ -8,7 +10,7 @@ import {
   RenderResult,
   waitFor,
 } from "@testing-library/react";
-import 'jest-localstorage-mock'
+import "jest-localstorage-mock";
 
 import { InvalidCredentialsError } from "@/domain/errors";
 
@@ -44,6 +46,8 @@ type TFactorySetupTestHelperParams = {
   validationError: string;
 };
 
+const history = createMemoryHistory();
+
 const factorySetupTestHelper = (
   params?: TFactorySetupTestHelperParams
 ): TFactorySetupTestHelperTypes => {
@@ -52,7 +56,9 @@ const factorySetupTestHelper = (
   validationSpy.errorMessage = params?.validationError;
 
   const utils = render(
-    <Login validation={validationSpy} authentication={authenticationSpy} />
+    <Router location={history.location} navigator={history}>
+      <Login validation={validationSpy} authentication={authenticationSpy} />
+    </Router>
   );
 
   return { ...utils, validationSpy, authenticationSpy };
@@ -93,8 +99,8 @@ const simulateStatusForField = (
 describe("<FormStatus/>", () => {
   afterEach(cleanup);
   beforeEach(() => {
-    localStorage.clear()
-  })
+    localStorage.clear();
+  });
 
   it("should start with initial state", async () => {
     const validationError = faker.random.words();
@@ -245,5 +251,17 @@ describe("<FormStatus/>", () => {
         authenticationSpy.account.accessToken
       )
     );
+  });
+
+  it("should go to signup page", () => {
+    factorySetupTestHelper();
+
+    const createAccountLinkButton = screen.getByRole("link", {
+      name: /Criar conta/i,
+    });
+    fireEvent.click(createAccountLinkButton);
+
+    expect(history.index).toBe(1)
+    expect(history.location.pathname).toBe("/signup");
   });
 });
