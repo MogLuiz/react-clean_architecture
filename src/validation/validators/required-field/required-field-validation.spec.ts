@@ -1,10 +1,10 @@
 import faker from "faker";
 
 import { RequiredFieldError } from "@/validation/errors";
-import { RequiredFieldValidation } from "@/validation/required-field/required-field-validation";
+import { RequiredFieldValidation } from "@/validation/validators/required-field/required-field-validation";
 
 const factorySetupTestHelper = (): RequiredFieldValidation => {
-  return new RequiredFieldValidation(faker.database.column())
+  return new RequiredFieldValidation(faker.database.column());
 };
 
 describe("RequiredFieldValidation", () => {
