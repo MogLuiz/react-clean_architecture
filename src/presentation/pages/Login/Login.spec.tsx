@@ -86,7 +86,7 @@ const simulateValidSubmit = (
   fireEvent.click(submitButton);
 };
 
-const simulateStatusForField = (
+const testStatusForField = (
   fieldName: "email" | "password",
   validationError?: string
 ): void => {
@@ -108,8 +108,8 @@ describe("<FormStatus/>", () => {
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
 
-    simulateStatusForField("email", validationError);
-    simulateStatusForField("password", validationError);
+    testStatusForField("email", validationError);
+    testStatusForField("password", validationError);
 
     expect(submitButton).toBeDisabled();
   });
@@ -143,7 +143,7 @@ describe("<FormStatus/>", () => {
     factorySetupTestHelper({ validationError });
 
     populateEmailField();
-    simulateStatusForField("email", validationError);
+    testStatusForField("email", validationError);
   });
 
   it("should show password error if Validation fails", () => {
@@ -151,14 +151,14 @@ describe("<FormStatus/>", () => {
     factorySetupTestHelper({ validationError });
 
     populatePasswordField();
-    simulateStatusForField("password", validationError);
+    testStatusForField("password", validationError);
   });
 
   it("should show valid email state if Validation succeeds", () => {
     factorySetupTestHelper();
 
     populateEmailField();
-    simulateStatusForField("email");
+    testStatusForField("email");
   });
 
   it("should show valid password state if Validation succeeds", () => {
@@ -166,7 +166,7 @@ describe("<FormStatus/>", () => {
 
     populatePasswordField();
 
-    simulateStatusForField("password");
+    testStatusForField("password");
   });
 
   it("should enable submit button if form is valid", () => {
