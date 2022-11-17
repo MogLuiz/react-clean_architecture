@@ -9,15 +9,15 @@ const factorySetupTestHelper = (): RequiredFieldValidation => {
 
 describe("RequiredFieldValidation", () => {
   test("should return error if field is empty", () => {
-    const sut = factorySetupTestHelper();
-    const error = sut.validate("");
+    const setup = factorySetupTestHelper();
+    const error = setup.validate("");
 
     expect(error).toEqual(new RequiredFieldError());
   });
 
   test("should return false if field isn't empty", () => {
-    const sut = factorySetupTestHelper();
-    const error = sut.validate(faker.random.word());
+    const setup = factorySetupTestHelper();
+    const error = setup.validate(faker.random.word());
 
     expect(error).toBeFalsy();
   });
