@@ -21,4 +21,11 @@ describe("EmailValidation", () => {
 
     expect(error).toBeFalsy()
   });
+
+  test("should return false if email is empty", () => {
+    const setup = factorySetupTestHelper();
+    const error = setup.validate('');
+
+    expect(error).toBeFalsy()
+  });
 });
