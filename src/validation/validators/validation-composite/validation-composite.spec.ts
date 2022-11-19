@@ -28,4 +28,12 @@ describe("ValidationComposite", () => {
 
     expect(error).toBe("first_error_message");
   });
+
+  test("should return error if any validation fails", () => {
+    const { setup } = factorySetupTestHelper();
+
+    const error = setup.validate("any_field", "any_value");
+
+    expect(error).toBeFalsy();
+  });
 });
