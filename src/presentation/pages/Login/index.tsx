@@ -14,8 +14,8 @@ import { IValidation } from "@/presentation/protocols/validation";
 import Styles from "./styles.module.scss";
 
 type TLoginprops = {
-  validation?: IValidation;
-  authentication?: Authentication;
+  validation: IValidation;
+  authentication: Authentication;
 };
 
 export const Login = ({ validation, authentication }: TLoginprops) => {
@@ -32,14 +32,14 @@ export const Login = ({ validation, authentication }: TLoginprops) => {
   useEffect(() => {
     setFormState((previous) => ({
       ...previous,
-      emailError: validation?.validate("email", formState.email),
+      emailError: validation.validate("email", formState.email),
     }));
   }, [formState.email]);
 
   useEffect(() => {
     setFormState((previous) => ({
       ...previous,
-      passwordError: validation?.validate("password", formState.password),
+      passwordError: validation.validate("password", formState.password),
     }));
   }, [formState.password]);
 

@@ -1,14 +1,18 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { Login } from "@/presentation/pages/Login";
+import "./styles/globals.scss";
 
-import './styles/globals.scss'
+type TPresentationRouterProps = {
+  MakeLoginFactory: () => JSX.Element;
+};
 
-export const PresentationRouter = () => (
+export const PresentationRouter = ({
+  MakeLoginFactory,
+}: TPresentationRouterProps) => (
   <BrowserRouter>
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<MakeLoginFactory />} />
     </Routes>
   </BrowserRouter>
 );
