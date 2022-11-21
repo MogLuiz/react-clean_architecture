@@ -46,7 +46,7 @@ type TFactorySetupTestHelperParams = {
   validationError: string;
 };
 
-const history = createMemoryHistory({initialEntries: ['/login']});
+const history = createMemoryHistory({ initialEntries: ["/login"] });
 
 const factorySetupTestHelper = (
   params?: TFactorySetupTestHelperParams
@@ -232,9 +232,8 @@ describe("<FormStatus/>", () => {
 
     simulateValidSubmit();
 
-    const mainError = screen.getByTestId("main-error");
-
     await waitFor(() => {
+      const mainError = screen.queryByTestId("main-error");
       expect(mainError.textContent).toBe(error.message);
       expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
     });
