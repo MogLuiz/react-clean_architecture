@@ -14,7 +14,7 @@ const factorySetupTestHelper = (fieldName: string): TSetupTestHelper => {
     new FieldValidationSpy(fieldName),
   ];
 
-  const setup = new ValidationComposite(fieldValidationSpy);
+  const setup = ValidationComposite.build(fieldValidationSpy);
 
   return { setup, fieldValidationSpy };
 };
