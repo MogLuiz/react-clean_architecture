@@ -1,5 +1,6 @@
-import { ValidationBuilder } from "@/validation/validators/builder/validation-builder";
+import faker from "faker";
 
+import { ValidationBuilder } from "@/validation/validators/builder/validation-builder";
 import {
   EmailValidation,
   RequiredFieldValidation,
@@ -7,32 +8,35 @@ import {
 } from "@/validation/validators";
 
 describe("ValidationBuilder", () => {
+  const field = faker.database.column();
+  const length = faker.random.number();
+
   test("should return RequiredFieldValidation", () => {
-    const validations = ValidationBuilder.field("any_field").required().build();
-    expect(validations).toEqual([new RequiredFieldValidation("any_field")]);
+    const validations = ValidationBuilder.field(field).required().build();
+    expect(validations).toEqual([new RequiredFieldValidation(field)]);
   });
 
   test("should return EmailValidation", () => {
-    const validations = ValidationBuilder.field("any_field").email().build();
-    expect(validations).toEqual([new EmailValidation("any_field")]);
+    const validations = ValidationBuilder.field(field).email().build();
+    expect(validations).toEqual([new EmailValidation(field)]);
   });
 
   test("should return MinLengthValidation", () => {
-    const validations = ValidationBuilder.field("any_field").min(5).build();
-    expect(validations).toEqual([new MinLengthValidation("any_field", 5)]);
+    const validations = ValidationBuilder.field(field).min(length).build();
+    expect(validations).toEqual([new MinLengthValidation(field, length)]);
   });
 
   test("should return a list of validations", () => {
-    const validations = ValidationBuilder.field("any_field")
+    const validations = ValidationBuilder.field(field)
       .required()
-      .min(5)
+      .min(length)
       .email()
       .build();
 
     expect(validations).toEqual([
-      new RequiredFieldValidation("any_field"),
-      new MinLengthValidation("any_field", 5),
-      new EmailValidation("any_field"),
+      new RequiredFieldValidation(field),
+      new MinLengthValidation(field, length),
+      new EmailValidation(field),
     ]);
   });
 });
