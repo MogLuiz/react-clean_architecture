@@ -18,25 +18,6 @@ import { ValidationSpy, AuthenticationSpy } from "@/presentation/test";
 
 import { Login } from ".";
 
-const handleChangeFormState = jest.fn();
-const setFormState = jest.fn();
-
-jest.mock("./hooks/useLoginForm", () => {
-  return {
-    useLoginForm: () => ({
-      formState: {
-        errorMessage: "",
-        isLoading: false,
-        email: "",
-        emailError: "Campo obrigatório",
-        passwordError: "Campo obrigatório",
-      },
-      handleChangeFormState,
-      setFormState,
-    }),
-  };
-});
-
 type TFactorySetupTestHelperTypes = {
   validationSpy: ValidationSpy;
   authenticationSpy: AuthenticationSpy;
