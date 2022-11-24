@@ -3,13 +3,16 @@ import "jest-localstorage-mock";
 
 import { LocalStorageAdapter } from "@/infra/cache/local-storage-adapter";
 
+const factorySetupTestHelper = (): LocalStorageAdapter =>
+  new LocalStorageAdapter();
+
 describe("LocalStorageAdapter", () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
   test("should call localStorage with correct values", async () => {
-    const setup = new LocalStorageAdapter();
+    const setup = factorySetupTestHelper();
     const key = faker.database.column();
     const value = faker.random.word();
 
