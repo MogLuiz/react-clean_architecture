@@ -1,29 +1,29 @@
 import faker from "faker";
 
-import { SetStorageSpy } from "@/data/test";
+import { SetStorageMock } from "@/data/test";
 import { LocalSaveAccessToken } from "@/data/usecases/save-access-token/local-save-access-token";
 
 type TFactorySetup = {
   setup: LocalSaveAccessToken;
-  setStorageSpy: SetStorageSpy;
+  setStorageMock: SetStorageMock;
 };
 
 const factorySetupTestHelper = (): TFactorySetup => {
-  const setStorageSpy = new SetStorageSpy();
-  const setup = new LocalSaveAccessToken(setStorageSpy);
+  const setStorageMock = new SetStorageMock();
+  const setup = new LocalSaveAccessToken(setStorageMock);
 
-  return { setup, setStorageSpy };
+  return { setup, setStorageMock };
 };
 
 describe("LocalSaveAccessToken", () => {
   const accessToken = faker.random.uuid();
 
   test("should call SetStorage with correct value", async () => {
-    const { setStorageSpy, setup } = factorySetupTestHelper();
+    const { setStorageMock, setup } = factorySetupTestHelper();
 
     await setup.save(accessToken);
 
-    expect(setStorageSpy.key).toBe("accessToken");
-    expect(setStorageSpy.value).toBe(accessToken);
+    expect(setStorageMock.key).toBe("accessToken");
+    expect(setStorageMock.value).toBe(accessToken);
   });
 });
