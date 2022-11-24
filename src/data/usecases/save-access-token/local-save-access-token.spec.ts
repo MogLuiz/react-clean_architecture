@@ -26,4 +26,13 @@ describe("LocalSaveAccessToken", () => {
     expect(setStorageMock.key).toBe("accessToken");
     expect(setStorageMock.value).toBe(accessToken);
   });
+
+  test("should call SetStorage with correct value", async () => {
+    const { setStorageMock, setup } = factorySetupTestHelper();
+    
+    jest.spyOn(setStorageMock, "set").mockRejectedValueOnce(new Error())
+    const promise = setup.save(accessToken);
+
+    await expect(promise).rejects.toThrow(new Error());
+  });
 });
