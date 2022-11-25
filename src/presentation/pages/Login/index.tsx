@@ -8,7 +8,7 @@ import { Button } from "@/presentation/atoms/Button";
 import { LoginHeader } from "@/presentation/molecules/LoginHeader";
 import { FormStatus } from "@/presentation/molecules/FormStatus";
 
-import { Authentication } from "@/domain/usecases";
+import { Authentication, ISaveAccessToken } from "@/domain/usecases";
 import { IValidation } from "@/presentation/protocols/validation";
 
 import Styles from "./styles.module.scss";
@@ -16,9 +16,14 @@ import Styles from "./styles.module.scss";
 type TLoginprops = {
   validation: IValidation;
   authentication: Authentication;
+  saveAccessToken: ISaveAccessToken;
 };
 
-export const Login = ({ validation, authentication }: TLoginprops) => {
+export const Login = ({
+  validation,
+  authentication,
+  saveAccessToken,
+}: TLoginprops) => {
   const navigate = useNavigate();
   const [formState, setFormState] = useState({
     isLoading: false,
@@ -58,7 +63,7 @@ export const Login = ({ validation, authentication }: TLoginprops) => {
         email: formState.email,
         password: formState.password,
       });
-      localStorage.setItem("accessToken", account.accessToken);
+      await saveAccessToken.save(account.accessToken);
       navigate("/", { replace: true });
     } catch (error) {
       setFormState({
