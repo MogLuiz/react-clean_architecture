@@ -14,13 +14,18 @@ import "jest-localstorage-mock";
 
 import { InvalidCredentialsError } from "@/domain/errors";
 
-import { ValidationSpy, AuthenticationSpy } from "@/presentation/test";
+import {
+  ValidationSpy,
+  AuthenticationSpy,
+  SaveAccessTokenMock,
+} from "@/presentation/test";
 
 import { Login } from ".";
 
 type TFactorySetupTestHelperTypes = {
   validationSpy: ValidationSpy;
   authenticationSpy: AuthenticationSpy;
+  saveAccessTokenMock: SaveAccessTokenMock;
 } & RenderResult;
 
 type TFactorySetupTestHelperParams = {
@@ -35,14 +40,19 @@ const factorySetupTestHelper = (
   const validationSpy = new ValidationSpy();
   const authenticationSpy = new AuthenticationSpy();
   validationSpy.errorMessage = params?.validationError;
+  const saveAccessTokenMock = new SaveAccessTokenMock();
 
   const utils = render(
     <Router location={history.location} navigator={history}>
-      <Login validation={validationSpy} authentication={authenticationSpy} />
+      <Login
+        validation={validationSpy}
+        authentication={authenticationSpy}
+        saveAccessToken={saveAccessTokenMock}
+      />
     </Router>
   );
 
-  return { ...utils, validationSpy, authenticationSpy };
+  return { ...utils, validationSpy, authenticationSpy, saveAccessTokenMock };
 };
 
 const populateEmailField = (email = faker.internet.email()): void => {
@@ -79,9 +89,6 @@ const testStatusForField = (
 
 describe("<FormStatus/>", () => {
   afterEach(cleanup);
-  beforeEach(() => {
-    localStorage.clear();
-  });
 
   it("should start with initial state", async () => {
     const validationError = faker.random.words();
@@ -220,14 +227,13 @@ describe("<FormStatus/>", () => {
     });
   });
 
-  it("should add accessToken to localstorage on success", async () => {
-    const { authenticationSpy } = factorySetupTestHelper();
+  it("should call SaveAccessToken on success", async () => {
+    const { authenticationSpy, saveAccessTokenMock } = factorySetupTestHelper();
 
     simulateValidSubmit();
 
     await waitFor(() => {
-      expect(localStorage.setItem).toHaveBeenCalledWith(
-        "accessToken",
+      expect(saveAccessTokenMock.accessToken).toBe(
         authenticationSpy.account.accessToken
       );
       expect(history.index).toBe(0);
