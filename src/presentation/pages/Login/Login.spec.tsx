@@ -241,6 +241,23 @@ describe("<FormStatus/>", () => {
     });
   });
 
+  it("should present error if SaveAccessToken fails", async () => {
+    const { saveAccessTokenMock } = factorySetupTestHelper();
+
+    const error = new InvalidCredentialsError();
+    jest
+      .spyOn(saveAccessTokenMock, "save")
+      .mockReturnValueOnce(Promise.reject(error));
+
+    simulateValidSubmit();
+
+    await waitFor(() => {
+      const mainError = screen.queryByTestId("main-error");
+      expect(mainError.textContent).toBe(error.message);
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
+    });
+  });
+
   it("should go to signup page", () => {
     factorySetupTestHelper();
 
