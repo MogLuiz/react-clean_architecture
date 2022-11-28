@@ -7,7 +7,7 @@ import { RemoteAddAccount } from "@/data/usecases/add-account/remote-add-account
 import { AccountModel } from "@/domain/models";
 import { AddAccountParams } from "@/domain/usecases";
 import { mockAddAccountParams } from "@/domain/test";
-import { EmailInUseError } from "@/domain/errors";
+import { EmailInUseError, UnexpectedError } from "@/domain/errors";
 
 type TFactorySetup = {
   setup: RemoteAddAccount;
@@ -55,5 +55,17 @@ describe("RemoteAddAccount", () => {
     const promise = setup.add(mockAddAccountParams());
 
     await expect(promise).rejects.toThrow(new EmailInUseError());
+  });
+
+  test("should throw UnexpectedError if HttpPostclient returns 400", async () => {
+    const { setup, httpPostClientSpy } = factorySetupTestHelper();
+
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.badRequest,
+    };
+
+    const promise = setup.add(mockAddAccountParams());
+
+    await expect(promise).rejects.toThrow(new UnexpectedError());
   });
 });
