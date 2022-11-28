@@ -6,7 +6,7 @@ import { RemoteAddAccount } from "@/data/usecases/add-account/remote-add-account
 
 import { AccountModel } from "@/domain/models";
 import { AddAccountParams } from "@/domain/usecases";
-import { mockAddAccountParams } from "@/domain/test";
+import { mockAccountModel, mockAddAccountParams } from "@/domain/test";
 import { EmailInUseError, UnexpectedError } from "@/domain/errors";
 
 type TFactorySetup = {
@@ -91,5 +91,19 @@ describe("RemoteAddAccount", () => {
     const promise = setup.add(mockAddAccountParams());
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
+  });
+
+  test("should return an AccountModel if HttpPostclient returns 200", async () => {
+    const { setup, httpPostClientSpy } = factorySetupTestHelper();
+    const httpResult = mockAccountModel();
+
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: httpResult,
+    };
+
+    const account = await setup.add(mockAddAccountParams());
+
+    expect(account).toEqual(httpResult);
   });
 });
