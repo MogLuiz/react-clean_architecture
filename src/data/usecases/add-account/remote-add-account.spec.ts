@@ -33,4 +33,13 @@ describe("RemoteAddAccount", () => {
     await setup.add(mockAddAccountParams());
     expect(httpPostClientSpy.url).toBe(url);
   });
+
+  test("should call HttpPostclient with correct body", async () => {
+    const authenticationBodyParams = mockAddAccountParams();
+    const { httpPostClientSpy, setup } = factorySetupTestHelper();
+
+    await setup.add(authenticationBodyParams);
+
+    expect(httpPostClientSpy.body).toEqual(authenticationBodyParams);
+  });
 });
