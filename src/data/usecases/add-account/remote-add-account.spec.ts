@@ -80,4 +80,16 @@ describe("RemoteAddAccount", () => {
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
+
+  test("should throw UnexpectedError if HttpPostclient returns 404", async () => {
+    const { setup, httpPostClientSpy } = factorySetupTestHelper();
+
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.notFound,
+    };
+
+    const promise = setup.add(mockAddAccountParams());
+
+    await expect(promise).rejects.toThrow(new UnexpectedError());
+  });
 });
