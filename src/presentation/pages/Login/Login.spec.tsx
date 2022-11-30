@@ -11,7 +11,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import "jest-localstorage-mock";
-
+import { Helper } from "@/presentation/test";
 import { InvalidCredentialsError } from "@/domain/errors";
 
 import {
@@ -77,16 +77,6 @@ const simulateValidSubmit = (
   fireEvent.click(submitButton);
 };
 
-const testStatusForField = (
-  fieldName: "email" | "password",
-  validationError?: string
-): void => {
-  const passwordInputStatus = screen.getByTestId(`${fieldName}-input-status`);
-
-  expect(passwordInputStatus.title).toBe(validationError || "Tudo certo!");
-  expect(passwordInputStatus.textContent).toBe(validationError ? "🔴" : "🟢");
-};
-
 describe("<Login Page/>", () => {
   afterEach(cleanup);
 
@@ -96,8 +86,8 @@ describe("<Login Page/>", () => {
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
 
-    testStatusForField("email", validationError);
-    testStatusForField("password", validationError);
+    Helper.testStatusForField("email", validationError);
+    Helper.testStatusForField("password", validationError);
 
     expect(submitButton).toBeDisabled();
   });
@@ -131,7 +121,7 @@ describe("<Login Page/>", () => {
     factorySetupTestHelper({ validationError });
 
     populateEmailField();
-    testStatusForField("email", validationError);
+    Helper.testStatusForField("email", validationError);
   });
 
   it("should show password error if Validation fails", () => {
@@ -139,14 +129,14 @@ describe("<Login Page/>", () => {
     factorySetupTestHelper({ validationError });
 
     populatePasswordField();
-    testStatusForField("password", validationError);
+    Helper.testStatusForField("password", validationError);
   });
 
   it("should show valid email state if Validation succeeds", () => {
     factorySetupTestHelper();
 
     populateEmailField();
-    testStatusForField("email");
+    Helper.testStatusForField("email");
   });
 
   it("should show valid password state if Validation succeeds", () => {
@@ -154,7 +144,7 @@ describe("<Login Page/>", () => {
 
     populatePasswordField();
 
-    testStatusForField("password");
+    Helper.testStatusForField("password");
   });
 
   it("should enable submit button if form is valid", () => {

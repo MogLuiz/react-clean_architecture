@@ -11,7 +11,8 @@ import { FormStatus } from "@/presentation/molecules/FormStatus";
 import { Authentication, ISaveAccessToken } from "@/domain/usecases";
 
 import { IValidation } from "@/presentation/protocols/validation";
-import Styles from "@/presentation/pages/shared/styles.module.scss";
+
+import Styles from "../shared/styles.module.scss";
 
 type TLoginprops = {
   validation: IValidation;

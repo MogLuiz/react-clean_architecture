@@ -12,12 +12,11 @@ import {
 } from "@testing-library/react";
 import "jest-localstorage-mock";
 import { SignUp } from ".";
+import { Helper } from "@/presentation/test";
 
-type TValidField = "email" | "password" | "name" | "passwordConfirmation"
 type TFactorySetupTestHelperTypes = {
   submitButton: HTMLElement;
 } & RenderResult;
-
 
 const factorySetupTestHelper = (): TFactorySetupTestHelperTypes => {
   const utils = render(<SignUp />);
@@ -29,26 +28,16 @@ const factorySetupTestHelper = (): TFactorySetupTestHelperTypes => {
   return { ...utils, submitButton };
 };
 
-const testStatusForField = (
-  fieldName: TValidField,
-  validationError?: string
-): void => {
-  const fieldStatus = screen.getByTestId(`${fieldName}-input-status`);
-
-  expect(fieldStatus.title).toBe(validationError || "Tudo certo!");
-  expect(fieldStatus.textContent).toBe(validationError ? "🔴" : "🟢");
-};
-
 describe("<SignUp Page/>", () => {
   it("should start with initial state", async () => {
     // const validationError = faker.random.words();
-    const validationError = 'Campo obrigatório';
+    const validationError = "Campo obrigatório";
     const { submitButton } = factorySetupTestHelper();
 
-    testStatusForField("name", validationError);
-    testStatusForField("email", validationError);
-    testStatusForField("password", validationError);
-    testStatusForField("passwordConfirmation", validationError);
+    Helper.testStatusForField("name", validationError);
+    Helper.testStatusForField("email", validationError);
+    Helper.testStatusForField("password", validationError);
+    Helper.testStatusForField("passwordConfirmation", validationError);
 
     expect(submitButton).toBeDisabled();
   });
