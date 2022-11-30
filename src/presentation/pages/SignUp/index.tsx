@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -7,19 +7,32 @@ import { Input } from "@/presentation/atoms/Input";
 import { Button } from "@/presentation/atoms/Button";
 
 import { LoginHeader } from "@/presentation/molecules/LoginHeader";
+import { IValidation } from "@/presentation/protocols/validation";
 import { FormStatus } from "@/presentation/molecules/FormStatus";
 
 import Styles from "../shared/styles.module.scss";
 
-export const SignUp = () => {
+type TSignUpProps = {
+  validation?: IValidation;
+};
+
+export const SignUp = ({ validation }: TSignUpProps) => {
   const [formState, setFormState] = useState({
     isLoading: false,
     errorMessage: "",
-    nameError: "Campo obrigatório",
+    name: "",
+    nameError: "",
     emailError: "Campo obrigatório",
     passwordError: "Campo obrigatório",
     passwordConfirmationError: "Campo obrigatório",
   });
+
+  useEffect(() => {
+    setFormState((previous) => ({
+      ...previous,
+      nameError: validation.validate("name", formState.name),
+    }));
+  }, [formState.name]);
 
   return (
     <div className={Styles.wrapper}>
@@ -34,9 +47,8 @@ export const SignUp = () => {
           name="name"
           aria-label="form name field"
           placeholder="Digite seu nome"
-          onChange={
-            (event) => {}
-            // setFormState({ ...formState, email: event.target.value })
+          onChange={(event) =>
+            setFormState({ ...formState, name: event.target.value })
           }
         />
         <Input
