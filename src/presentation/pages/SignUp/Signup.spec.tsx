@@ -1,4 +1,5 @@
 import React from "react";
+import "jest-localstorage-mock";
 import { createMemoryHistory } from "history";
 import { Router } from "react-router-dom";
 import faker from "faker";
@@ -10,16 +11,23 @@ import {
   RenderResult,
   waitFor,
 } from "@testing-library/react";
-import "jest-localstorage-mock";
 import { SignUp } from ".";
-import { Helper } from "@/presentation/test";
+import { Helper, ValidationSpy } from "@/presentation/test";
 
 type TFactorySetupTestHelperTypes = {
   submitButton: HTMLElement;
 } & RenderResult;
 
-const factorySetupTestHelper = (): TFactorySetupTestHelperTypes => {
-  const utils = render(<SignUp />);
+type TFactorySetupTestHelperParams = {
+  validationError: string;
+};
+
+const factorySetupTestHelper = (
+  params?: TFactorySetupTestHelperParams
+): TFactorySetupTestHelperTypes => {
+  const validationSpy = new ValidationSpy();
+  validationSpy.errorMessage = params?.validationError;
+  const utils = render(<SignUp validation={validationSpy} />);
 
   const submitButton = screen.getByRole("button", {
     name: /Entrar/i,
@@ -28,17 +36,33 @@ const factorySetupTestHelper = (): TFactorySetupTestHelperTypes => {
   return { ...utils, submitButton };
 };
 
+const populateFormField = (
+  fieldName: string,
+  fieldValue = faker.random.word()
+): void => {
+  const emailInput = screen.getByLabelText(`form ${fieldName} field`);
+  fireEvent.input(emailInput, { target: { value: fieldValue } });
+};
+
 describe("<SignUp Page/>", () => {
+  afterEach(cleanup);
+  const validationError = faker.random.words();
+
   it("should start with initial state", async () => {
-    // const validationError = faker.random.words();
-    const validationError = "Campo obrigatório";
-    const { submitButton } = factorySetupTestHelper();
+    const { submitButton } = factorySetupTestHelper({ validationError });
 
     Helper.testStatusForField("name", validationError);
-    Helper.testStatusForField("email", validationError);
-    Helper.testStatusForField("password", validationError);
-    Helper.testStatusForField("passwordConfirmation", validationError);
+    Helper.testStatusForField("email", "Campo obrigatório");
+    Helper.testStatusForField("password", "Campo obrigatório");
+    Helper.testStatusForField("passwordConfirmation", "Campo obrigatório");
 
     expect(submitButton).toBeDisabled();
+  });
+
+  it("should show name error if Validation fails", () => {
+    factorySetupTestHelper({ validationError });
+
+    populateFormField("name");
+    Helper.testStatusForField("name", validationError);
   });
 });
