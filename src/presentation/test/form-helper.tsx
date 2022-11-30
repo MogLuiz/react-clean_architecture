@@ -1,4 +1,5 @@
-import { screen } from "@testing-library/react";
+import faker from "faker";
+import { screen, fireEvent } from "@testing-library/react";
 
 type TValidField = "email" | "password" | "name" | "passwordConfirmation";
 
@@ -10,4 +11,12 @@ export const testStatusForField = (
 
   expect(fieldStatus.title).toBe(validationError || "Tudo certo!");
   expect(fieldStatus.textContent).toBe(validationError ? "🔴" : "🟢");
+};
+
+export const populateFormField = (
+  fieldName: string,
+  fieldValue = faker.random.word()
+): void => {
+  const emailInput = screen.getByLabelText(`form ${fieldName} field`);
+  fireEvent.input(emailInput, { target: { value: fieldValue } });
 };

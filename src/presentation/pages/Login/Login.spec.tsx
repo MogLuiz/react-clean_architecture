@@ -55,24 +55,14 @@ const factorySetupTestHelper = (
   return { ...utils, validationSpy, authenticationSpy, saveAccessTokenMock };
 };
 
-const populateEmailField = (email = faker.internet.email()): void => {
-  const emailInput = screen.getByLabelText("form email field");
-  fireEvent.input(emailInput, { target: { value: email } });
-};
-
-const populatePasswordField = (password = faker.internet.password()): void => {
-  const passwordInput = screen.getByLabelText("form password field");
-  fireEvent.input(passwordInput, { target: { value: password } });
-};
-
 const simulateValidSubmit = (
   email = faker.internet.email(),
   password = faker.internet.password()
 ): void => {
   const submitButton = screen.getByRole("button", { name: /entrar/i });
 
-  populateEmailField(email);
-  populatePasswordField(password);
+  Helper.populateFormField("email", email);
+  Helper.populateFormField("password", password);
 
   fireEvent.click(submitButton);
 };
@@ -98,7 +88,7 @@ describe("<Login Page/>", () => {
 
     const randomEmail = faker.internet.email();
 
-    populateEmailField(randomEmail);
+    Helper.populateFormField("email", randomEmail);
 
     expect(validationSpy.fieldName).toBe("email");
     expect(validationSpy.fieldValue).toBe(randomEmail);
@@ -110,7 +100,7 @@ describe("<Login Page/>", () => {
 
     const randomPassword = faker.internet.password();
 
-    populatePasswordField(randomPassword);
+    Helper.populateFormField("password", randomPassword);
 
     expect(validationSpy.fieldName).toBe("password");
     expect(validationSpy.fieldValue).toBe(randomPassword);
@@ -120,7 +110,7 @@ describe("<Login Page/>", () => {
     const validationError = faker.random.words();
     factorySetupTestHelper({ validationError });
 
-    populateEmailField();
+    Helper.populateFormField("email");
     Helper.testStatusForField("email", validationError);
   });
 
@@ -128,21 +118,21 @@ describe("<Login Page/>", () => {
     const validationError = faker.random.words();
     factorySetupTestHelper({ validationError });
 
-    populatePasswordField();
+    Helper.populateFormField("password");
     Helper.testStatusForField("password", validationError);
   });
 
   it("should show valid email state if Validation succeeds", () => {
     factorySetupTestHelper();
 
-    populateEmailField();
+    Helper.populateFormField("email");
     Helper.testStatusForField("email");
   });
 
   it("should show valid password state if Validation succeeds", () => {
     factorySetupTestHelper();
 
-    populatePasswordField();
+    Helper.populateFormField("password");
 
     Helper.testStatusForField("password");
   });
@@ -152,8 +142,8 @@ describe("<Login Page/>", () => {
 
     const submitButton = screen.getByRole("button", { name: /entrar/i });
 
-    populateEmailField();
-    populatePasswordField();
+    Helper.populateFormField("email");
+    Helper.populateFormField("password");
 
     expect(submitButton).not.toBeDisabled();
   });
@@ -194,7 +184,7 @@ describe("<Login Page/>", () => {
     const { authenticationSpy } = factorySetupTestHelper({ validationError });
 
     const form = screen.getByRole("form");
-    populateEmailField();
+    Helper.populateFormField("email");
     fireEvent.submit(form);
 
     expect(authenticationSpy.callsCount).toBe(0);

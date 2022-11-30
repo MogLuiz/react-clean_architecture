@@ -36,14 +36,6 @@ const factorySetupTestHelper = (
   return { ...utils, submitButton };
 };
 
-const populateFormField = (
-  fieldName: string,
-  fieldValue = faker.random.word()
-): void => {
-  const emailInput = screen.getByLabelText(`form ${fieldName} field`);
-  fireEvent.input(emailInput, { target: { value: fieldValue } });
-};
-
 describe("<SignUp Page/>", () => {
   afterEach(cleanup);
   const validationError = faker.random.words();
@@ -62,7 +54,7 @@ describe("<SignUp Page/>", () => {
   it("should show name error if Validation fails", () => {
     factorySetupTestHelper({ validationError });
 
-    populateFormField("name");
+    Helper.populateFormField("name");
     Helper.testStatusForField("name", validationError);
   });
 });
