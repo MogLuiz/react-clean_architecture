@@ -9,9 +9,10 @@ import { LoginHeader } from "@/presentation/molecules/LoginHeader";
 import { FormStatus } from "@/presentation/molecules/FormStatus";
 
 import { Authentication, ISaveAccessToken } from "@/domain/usecases";
+
 import { IValidation } from "@/presentation/protocols/validation";
 
-import Styles from "./styles.module.scss";
+import Styles from "../shared/styles.module.scss";
 
 type TLoginprops = {
   validation: IValidation;
@@ -74,7 +75,7 @@ export const Login = ({
     }
   };
   return (
-    <div className={Styles.login}>
+    <div className={Styles.wrapper}>
       <LoginHeader />
 
       <form role="form" className={Styles.form} onSubmit={handleSubmitForm}>
