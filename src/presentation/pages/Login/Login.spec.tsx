@@ -87,7 +87,7 @@ const testStatusForField = (
   expect(passwordInputStatus.textContent).toBe(validationError ? "🔴" : "🟢");
 };
 
-describe("<FormStatus/>", () => {
+describe("<Login Page/>", () => {
   afterEach(cleanup);
 
   it("should start with initial state", async () => {
