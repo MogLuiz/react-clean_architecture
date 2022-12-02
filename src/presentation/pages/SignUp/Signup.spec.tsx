@@ -92,4 +92,11 @@ describe("<SignUp Page/>", () => {
     Helper.populateFormField("email");
     Helper.testStatusForField("email");
   });
+
+  it("should show valid password state if Validation succeeds", () => {
+    factorySetupTestHelper();
+
+    Helper.populateFormField("password");
+    Helper.testStatusForField("password");
+  });
 });
