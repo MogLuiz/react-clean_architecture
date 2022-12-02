@@ -57,10 +57,14 @@ export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
     formState.nameError ||
     formState.passwordConfirmationError;
 
+  const isInvalidForm = formState.isLoading;
+
   const handleSubmitForm = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     event.preventDefault();
+
+    if (isInvalidForm) return;
     setFormState((previous) => ({ ...previous, isLoading: true }));
     await addAccount.add({
       name: formState.name,
@@ -114,7 +118,10 @@ export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
           aria-label="form passwordConfirmation field"
           placeholder="Digite novamente sua senha"
           onChange={(event) =>
-            setFormState({ ...formState, passwordConfirmation: event.target.value })
+            setFormState({
+              ...formState,
+              passwordConfirmation: event.target.value,
+            })
           }
         />
 
