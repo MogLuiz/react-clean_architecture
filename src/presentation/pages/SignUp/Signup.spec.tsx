@@ -12,10 +12,11 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { SignUp } from ".";
-import { Helper, ValidationSpy } from "@/presentation/test";
+import { Helper, ValidationSpy, AddAccountSpy } from "@/presentation/test";
 
 type TFactorySetupTestHelperTypes = {
   submitButton: HTMLElement;
+  addAccountSpy: AddAccountSpy;
 } & RenderResult;
 
 type TFactorySetupTestHelperParams = {
@@ -25,15 +26,18 @@ type TFactorySetupTestHelperParams = {
 const factorySetupTestHelper = (
   params?: TFactorySetupTestHelperParams
 ): TFactorySetupTestHelperTypes => {
+  const addAccountSpy = new AddAccountSpy();
   const validationSpy = new ValidationSpy();
   validationSpy.errorMessage = params?.validationError;
-  const utils = render(<SignUp validation={validationSpy} />);
+  const utils = render(
+    <SignUp validation={validationSpy} addAccount={addAccountSpy} />
+  );
 
   const submitButton = screen.getByRole("button", {
     name: /Entrar/i,
   });
 
-  return { ...utils, submitButton };
+  return { ...utils, submitButton, addAccountSpy };
 };
 
 const simulateValidSubmit = (
@@ -140,5 +144,22 @@ describe("<SignUp Page/>", () => {
     simulateValidSubmit();
 
     expect(screen.getByTestId("spinner")).toBeTruthy();
+  });
+
+  it("should call AddAccount with correct values", () => {
+    const { addAccountSpy } = factorySetupTestHelper();
+
+    const name = faker.name.findName();
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+
+    simulateValidSubmit(name, email, password);
+
+    expect(addAccountSpy.params).toEqual({
+      name,
+      email,
+      password,
+      passwordConfirmation: password,
+    });
   });
 });
