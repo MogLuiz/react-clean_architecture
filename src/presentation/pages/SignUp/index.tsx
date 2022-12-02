@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
+import { AddAccount } from "@/domain/usecases";
+
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
 import { Button } from "@/presentation/atoms/Button";
@@ -13,32 +15,70 @@ import { FormStatus } from "@/presentation/molecules/FormStatus";
 import Styles from "../shared/styles.module.scss";
 
 type TSignUpProps = {
-  validation?: IValidation;
+  validation: IValidation;
+  addAccount: AddAccount;
 };
 
-export const SignUp = ({ validation }: TSignUpProps) => {
+export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
   const [formState, setFormState] = useState({
     isLoading: false,
     errorMessage: "",
     name: "",
+    email: "",
+    password: "",
+    passwordConfirmation: "",
     nameError: "",
-    emailError: "Campo obrigatório",
-    passwordError: "Campo obrigatório",
-    passwordConfirmationError: "Campo obrigatório",
+    emailError: "",
+    passwordError: "",
+    passwordConfirmationError: "",
   });
 
   useEffect(() => {
     setFormState((previous) => ({
       ...previous,
       nameError: validation.validate("name", formState.name),
+      emailError: validation.validate("email", formState.email),
+      passwordError: validation.validate("password", formState.password),
+      passwordConfirmationError: validation.validate(
+        "passwordConfirmation",
+        formState.passwordConfirmation
+      ),
     }));
-  }, [formState.name]);
+  }, [
+    formState.name,
+    formState.email,
+    formState.password,
+    formState.passwordConfirmation,
+  ]);
+
+  const isButtonFormDisable =
+    formState.emailError ||
+    formState.passwordError ||
+    formState.nameError ||
+    formState.passwordConfirmationError;
+
+  const isInvalidForm = formState.isLoading;
+
+  const handleSubmitForm = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    event.preventDefault();
+
+    if (isInvalidForm) return;
+    setFormState((previous) => ({ ...previous, isLoading: true }));
+    await addAccount.add({
+      name: formState.name,
+      email: formState.email,
+      password: formState.password,
+      passwordConfirmation: formState.passwordConfirmation,
+    });
+  };
 
   return (
     <div className={Styles.wrapper}>
       <LoginHeader />
 
-      <form role="form" className={Styles.form}>
+      <form role="form" className={Styles.form} onSubmit={handleSubmitForm}>
         <h2>Criar Conta</h2>
 
         <Input
@@ -57,9 +97,8 @@ export const SignUp = ({ validation }: TSignUpProps) => {
           name="email"
           aria-label="form email field"
           placeholder="Digite seu e-mail"
-          onChange={
-            (event) => {}
-            // setFormState({ ...formState, email: event.target.value })
+          onChange={(event) =>
+            setFormState({ ...formState, email: event.target.value })
           }
         />
         <Input
@@ -68,33 +107,37 @@ export const SignUp = ({ validation }: TSignUpProps) => {
           name="password"
           aria-label="form password field"
           placeholder="Digite sua senha"
-          onChange={
-            (event) => {}
-            // setFormState({ ...formState, password: event.target.value })
+          onChange={(event) =>
+            setFormState({ ...formState, password: event.target.value })
           }
         />
         <Input
           type="password"
           title={formState.passwordConfirmationError}
           name="passwordConfirmation"
-          aria-label="form password confirmation field"
+          aria-label="form passwordConfirmation field"
           placeholder="Digite novamente sua senha"
-          onChange={
-            (event) => {}
-            // setFormState({ ...formState, password: event.target.value })
+          onChange={(event) =>
+            setFormState({
+              ...formState,
+              passwordConfirmation: event.target.value,
+            })
           }
         />
 
         <Button
           data-testid="buttonFormSubmit"
           type="submit"
-          disabled
+          disabled={!!isButtonFormDisable}
           textButton="Entrar"
           className={Styles.submit}
         />
 
         <span className={Styles.link}>Voltar para Login</span>
-        <FormStatus isLoading={false} errorMessage={""} />
+        <FormStatus
+          isLoading={formState.isLoading}
+          errorMessage={formState.errorMessage}
+        />
       </form>
 
       <Footer />
