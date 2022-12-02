@@ -22,9 +22,10 @@ export const SignUp = ({ validation }: TSignUpProps) => {
     errorMessage: "",
     name: "",
     email: "",
+    password: "",
     nameError: "",
     emailError: "",
-    passwordError: "Campo obrigatório",
+    passwordError: "",
     passwordConfirmationError: "Campo obrigatório",
   });
 
@@ -33,8 +34,9 @@ export const SignUp = ({ validation }: TSignUpProps) => {
       ...previous,
       nameError: validation.validate("name", formState.name),
       emailError: validation.validate("email", formState.email),
+      passwordError: validation.validate("password", formState.password),
     }));
-  }, [formState.name, formState.email]);
+  }, [formState.name, formState.email, formState.password]);
 
   return (
     <div className={Styles.wrapper}>
