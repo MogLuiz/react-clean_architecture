@@ -21,8 +21,9 @@ export const SignUp = ({ validation }: TSignUpProps) => {
     isLoading: false,
     errorMessage: "",
     name: "",
+    email: "",
     nameError: "",
-    emailError: "Campo obrigatório",
+    emailError: "",
     passwordError: "Campo obrigatório",
     passwordConfirmationError: "Campo obrigatório",
   });
@@ -31,8 +32,9 @@ export const SignUp = ({ validation }: TSignUpProps) => {
     setFormState((previous) => ({
       ...previous,
       nameError: validation.validate("name", formState.name),
+      emailError: validation.validate("email", formState.email),
     }));
-  }, [formState.name]);
+  }, [formState.name, formState.email]);
 
   return (
     <div className={Styles.wrapper}>
