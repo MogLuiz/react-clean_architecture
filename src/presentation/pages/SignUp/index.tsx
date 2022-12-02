@@ -48,6 +48,12 @@ export const SignUp = ({ validation }: TSignUpProps) => {
     formState.passwordConfirmation,
   ]);
 
+  const isButtonFormDisable =
+    formState.emailError ||
+    formState.passwordError ||
+    formState.nameError ||
+    formState.passwordConfirmationError;
+
   return (
     <div className={Styles.wrapper}>
       <LoginHeader />
@@ -102,7 +108,7 @@ export const SignUp = ({ validation }: TSignUpProps) => {
         <Button
           data-testid="buttonFormSubmit"
           type="submit"
-          disabled
+          disabled={!!isButtonFormDisable}
           textButton="Entrar"
           className={Styles.submit}
         />
