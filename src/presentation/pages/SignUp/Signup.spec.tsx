@@ -106,4 +106,17 @@ describe("<SignUp Page/>", () => {
     Helper.populateFormField("passwordConfirmation");
     Helper.testStatusForField("passwordConfirmation");
   });
+
+  it("should enable submit button if form is valid", () => {
+    factorySetupTestHelper();
+
+    const submitButton = screen.getByRole("button", { name: /entrar/i });
+
+    Helper.populateFormField("name");
+    Helper.populateFormField("email");
+    Helper.populateFormField("password");
+    Helper.populateFormField("passwordConfirmation");
+
+    expect(submitButton).not.toBeDisabled();
+  });
 });
