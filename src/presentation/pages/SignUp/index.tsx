@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
+import { AddAccount } from "@/domain/usecases";
+
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
 import { Button } from "@/presentation/atoms/Button";
@@ -13,10 +15,11 @@ import { FormStatus } from "@/presentation/molecules/FormStatus";
 import Styles from "../shared/styles.module.scss";
 
 type TSignUpProps = {
-  validation?: IValidation;
+  validation: IValidation;
+  addAccount: AddAccount;
 };
 
-export const SignUp = ({ validation }: TSignUpProps) => {
+export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
   const [formState, setFormState] = useState({
     isLoading: false,
     errorMessage: "",
@@ -59,6 +62,12 @@ export const SignUp = ({ validation }: TSignUpProps) => {
   ): Promise<void> => {
     event.preventDefault();
     setFormState((previous) => ({ ...previous, isLoading: true }));
+    await addAccount.add({
+      name: formState.name,
+      email: formState.email,
+      password: formState.password,
+      passwordConfirmation: formState.passwordConfirmation,
+    });
   };
 
   return (
@@ -105,7 +114,7 @@ export const SignUp = ({ validation }: TSignUpProps) => {
           aria-label="form passwordConfirmation field"
           placeholder="Digite novamente sua senha"
           onChange={(event) =>
-            setFormState({ ...formState, password: event.target.value })
+            setFormState({ ...formState, passwordConfirmation: event.target.value })
           }
         />
 
