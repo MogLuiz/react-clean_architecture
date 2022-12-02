@@ -99,4 +99,11 @@ describe("<SignUp Page/>", () => {
     Helper.populateFormField("password");
     Helper.testStatusForField("password");
   });
+
+  it("should show valid passwordConfirmation state if Validation succeeds", () => {
+    factorySetupTestHelper();
+
+    Helper.populateFormField("passwordConfirmation");
+    Helper.testStatusForField("passwordConfirmation");
+  });
 });
