@@ -54,11 +54,18 @@ export const SignUp = ({ validation }: TSignUpProps) => {
     formState.nameError ||
     formState.passwordConfirmationError;
 
+  const handleSubmitForm = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    event.preventDefault();
+    setFormState((previous) => ({ ...previous, isLoading: true }));
+  };
+
   return (
     <div className={Styles.wrapper}>
       <LoginHeader />
 
-      <form role="form" className={Styles.form}>
+      <form role="form" className={Styles.form} onSubmit={handleSubmitForm}>
         <h2>Criar Conta</h2>
 
         <Input
@@ -77,9 +84,8 @@ export const SignUp = ({ validation }: TSignUpProps) => {
           name="email"
           aria-label="form email field"
           placeholder="Digite seu e-mail"
-          onChange={
-            (event) => {}
-            // setFormState({ ...formState, email: event.target.value })
+          onChange={(event) =>
+            setFormState({ ...formState, email: event.target.value })
           }
         />
         <Input
@@ -88,9 +94,8 @@ export const SignUp = ({ validation }: TSignUpProps) => {
           name="password"
           aria-label="form password field"
           placeholder="Digite sua senha"
-          onChange={
-            (event) => {}
-            // setFormState({ ...formState, password: event.target.value })
+          onChange={(event) =>
+            setFormState({ ...formState, password: event.target.value })
           }
         />
         <Input
@@ -99,9 +104,8 @@ export const SignUp = ({ validation }: TSignUpProps) => {
           name="passwordConfirmation"
           aria-label="form passwordConfirmation field"
           placeholder="Digite novamente sua senha"
-          onChange={
-            (event) => {}
-            // setFormState({ ...formState, password: event.target.value })
+          onChange={(event) =>
+            setFormState({ ...formState, password: event.target.value })
           }
         />
 
@@ -114,7 +118,10 @@ export const SignUp = ({ validation }: TSignUpProps) => {
         />
 
         <span className={Styles.link}>Voltar para Login</span>
-        <FormStatus isLoading={false} errorMessage={""} />
+        <FormStatus
+          isLoading={formState.isLoading}
+          errorMessage={formState.errorMessage}
+        />
       </form>
 
       <Footer />
