@@ -150,7 +150,6 @@ describe("<Login Page/>", () => {
 
   it("should show spinner on submit", () => {
     factorySetupTestHelper();
-
     simulateValidSubmit();
 
     expect(screen.getByTestId("spinner")).toBeTruthy();

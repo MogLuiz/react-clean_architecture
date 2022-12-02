@@ -36,6 +36,21 @@ const factorySetupTestHelper = (
   return { ...utils, submitButton };
 };
 
+const simulateValidSubmit = (
+  name = faker.internet.userName(),
+  email = faker.internet.email(),
+  password = faker.internet.password()
+): void => {
+  const submitButton = screen.getByRole("button", { name: /entrar/i });
+
+  Helper.populateFormField("name", name);
+  Helper.populateFormField("email", email);
+  Helper.populateFormField("password", password);
+  Helper.populateFormField("passwordConfirmation", password);
+
+  fireEvent.click(submitButton);
+};
+
 describe("<SignUp Page/>", () => {
   afterEach(cleanup);
   const validationError = faker.random.words();
@@ -85,7 +100,7 @@ describe("<SignUp Page/>", () => {
     Helper.populateFormField("name");
     Helper.testStatusForField("name");
   });
-  
+
   it("should show valid email state if Validation succeeds", () => {
     factorySetupTestHelper();
 
@@ -110,7 +125,7 @@ describe("<SignUp Page/>", () => {
   it("should enable submit button if form is valid", () => {
     factorySetupTestHelper();
 
-    const submitButton = screen.getByRole("button", { name: /entrar/i });
+    const submitButton = screen.getByTestId("buttonFormSubmit");
 
     Helper.populateFormField("name");
     Helper.populateFormField("email");
@@ -118,5 +133,12 @@ describe("<SignUp Page/>", () => {
     Helper.populateFormField("passwordConfirmation");
 
     expect(submitButton).not.toBeDisabled();
+  });
+
+  it("should show spinner on submit", () => {
+    factorySetupTestHelper();
+    simulateValidSubmit();
+
+    expect(screen.getByTestId("spinner")).toBeTruthy();
   });
 });
