@@ -85,4 +85,11 @@ describe("<SignUp Page/>", () => {
     Helper.populateFormField("name");
     Helper.testStatusForField("name");
   });
+  
+  it("should show valid email state if Validation succeeds", () => {
+    factorySetupTestHelper();
+
+    Helper.populateFormField("email");
+    Helper.testStatusForField("email");
+  });
 });
