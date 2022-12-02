@@ -162,4 +162,13 @@ describe("<SignUp Page/>", () => {
       passwordConfirmation: password,
     });
   });
+
+  it("should call AddAccount only once", () => {
+    const { addAccountSpy } = factorySetupTestHelper();
+
+    simulateValidSubmit();
+    simulateValidSubmit();
+
+    expect(addAccountSpy.callsCount).toBe(1);
+  });
 });
