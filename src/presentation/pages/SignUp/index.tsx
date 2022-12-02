@@ -23,10 +23,11 @@ export const SignUp = ({ validation }: TSignUpProps) => {
     name: "",
     email: "",
     password: "",
+    passwordConfirmation: "",
     nameError: "",
     emailError: "",
     passwordError: "",
-    passwordConfirmationError: "Campo obrigatório",
+    passwordConfirmationError: "",
   });
 
   useEffect(() => {
@@ -35,8 +36,17 @@ export const SignUp = ({ validation }: TSignUpProps) => {
       nameError: validation.validate("name", formState.name),
       emailError: validation.validate("email", formState.email),
       passwordError: validation.validate("password", formState.password),
+      passwordConfirmationError: validation.validate(
+        "passwordConfirmation",
+        formState.passwordConfirmation
+      ),
     }));
-  }, [formState.name, formState.email, formState.password]);
+  }, [
+    formState.name,
+    formState.email,
+    formState.password,
+    formState.passwordConfirmation,
+  ]);
 
   return (
     <div className={Styles.wrapper}>
@@ -81,7 +91,7 @@ export const SignUp = ({ validation }: TSignUpProps) => {
           type="password"
           title={formState.passwordConfirmationError}
           name="passwordConfirmation"
-          aria-label="form password confirmation field"
+          aria-label="form passwordConfirmation field"
           placeholder="Digite novamente sua senha"
           onChange={
             (event) => {}
