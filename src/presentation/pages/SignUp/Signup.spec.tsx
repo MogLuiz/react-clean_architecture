@@ -78,4 +78,11 @@ describe("<SignUp Page/>", () => {
     Helper.populateFormField("passwordConfirmation");
     Helper.testStatusForField("passwordConfirmation", validationError);
   });
+
+  it("should show valid name state if Validation succeeds", () => {
+    factorySetupTestHelper();
+
+    Helper.populateFormField("name");
+    Helper.testStatusForField("name");
+  });
 });
