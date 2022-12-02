@@ -45,7 +45,7 @@ describe("<SignUp Page/>", () => {
 
     Helper.testStatusForField("name", validationError);
     Helper.testStatusForField("email", validationError);
-    Helper.testStatusForField("password", "Campo obrigatório");
+    Helper.testStatusForField("password", validationError);
     Helper.testStatusForField("passwordConfirmation", "Campo obrigatório");
 
     expect(submitButton).toBeDisabled();
@@ -63,5 +63,12 @@ describe("<SignUp Page/>", () => {
 
     Helper.populateFormField("email");
     Helper.testStatusForField("email", validationError);
+  });
+
+  it("should show password error if Validation fails", () => {
+    factorySetupTestHelper({ validationError });
+
+    Helper.populateFormField("password");
+    Helper.testStatusForField("password", validationError);
   });
 });
