@@ -44,7 +44,7 @@ describe("<SignUp Page/>", () => {
     const { submitButton } = factorySetupTestHelper({ validationError });
 
     Helper.testStatusForField("name", validationError);
-    Helper.testStatusForField("email", "Campo obrigatório");
+    Helper.testStatusForField("email", validationError);
     Helper.testStatusForField("password", "Campo obrigatório");
     Helper.testStatusForField("passwordConfirmation", "Campo obrigatório");
 
@@ -56,5 +56,12 @@ describe("<SignUp Page/>", () => {
 
     Helper.populateFormField("name");
     Helper.testStatusForField("name", validationError);
+  });
+
+  it("should show email error if Validation fails", () => {
+    factorySetupTestHelper({ validationError });
+
+    Helper.populateFormField("email");
+    Helper.testStatusForField("email", validationError);
   });
 });
