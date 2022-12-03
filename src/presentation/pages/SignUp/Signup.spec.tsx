@@ -13,6 +13,7 @@ import {
 } from "@testing-library/react";
 import { SignUp } from ".";
 import { Helper, ValidationSpy, AddAccountSpy } from "@/presentation/test";
+import { EmailInUseError } from "@/domain/errors";
 
 type TFactorySetupTestHelperTypes = {
   submitButton: HTMLElement;
@@ -181,5 +182,20 @@ describe("<SignUp Page/>", () => {
     fireEvent.submit(form);
 
     expect(addAccountSpy.callsCount).toBe(0);
+  });
+
+  it("should present error if Authentication fails", async () => {
+    const { addAccountSpy } = factorySetupTestHelper();
+
+    const error = new EmailInUseError();
+    jest.spyOn(addAccountSpy, "add").mockRejectedValueOnce(error);
+
+    simulateValidSubmit();
+
+    await waitFor(() => {
+      const mainError = screen.queryByTestId("main-error");
+      expect(mainError.textContent).toBe(error.message);
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
+    });
   });
 });
