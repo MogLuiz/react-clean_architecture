@@ -12,32 +12,48 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { SignUp } from ".";
-import { Helper, ValidationSpy, AddAccountSpy } from "@/presentation/test";
+import {
+  Helper,
+  ValidationSpy,
+  AddAccountSpy,
+  SaveAccessTokenMock,
+} from "@/presentation/test";
+import { EmailInUseError } from "@/domain/errors";
 
 type TFactorySetupTestHelperTypes = {
   submitButton: HTMLElement;
   addAccountSpy: AddAccountSpy;
+  saveAccessTokenMock: SaveAccessTokenMock;
 } & RenderResult;
 
 type TFactorySetupTestHelperParams = {
   validationError: string;
 };
 
+const history = createMemoryHistory({ initialEntries: ["/signup"] });
+
 const factorySetupTestHelper = (
   params?: TFactorySetupTestHelperParams
 ): TFactorySetupTestHelperTypes => {
   const addAccountSpy = new AddAccountSpy();
   const validationSpy = new ValidationSpy();
+  const saveAccessTokenMock = new SaveAccessTokenMock();
   validationSpy.errorMessage = params?.validationError;
   const utils = render(
-    <SignUp validation={validationSpy} addAccount={addAccountSpy} />
+    <Router location={history.location} navigator={history}>
+      <SignUp
+        validation={validationSpy}
+        addAccount={addAccountSpy}
+        saveAccessToken={saveAccessTokenMock}
+      />
+    </Router>
   );
 
   const submitButton = screen.getByRole("button", {
     name: /Entrar/i,
   });
 
-  return { ...utils, submitButton, addAccountSpy };
+  return { ...utils, submitButton, addAccountSpy, saveAccessTokenMock };
 };
 
 const simulateValidSubmit = (
@@ -170,5 +186,72 @@ describe("<SignUp Page/>", () => {
     simulateValidSubmit();
 
     expect(addAccountSpy.callsCount).toBe(1);
+  });
+
+  it("should not call Authentication if form is invalid", () => {
+    const validationError = faker.random.words();
+    const { addAccountSpy } = factorySetupTestHelper({ validationError });
+
+    const form = screen.getByRole("form");
+    Helper.populateFormField("email");
+    fireEvent.submit(form);
+
+    expect(addAccountSpy.callsCount).toBe(0);
+  });
+
+  it("should present error if Authentication fails", async () => {
+    const { addAccountSpy } = factorySetupTestHelper();
+
+    const error = new EmailInUseError();
+    jest.spyOn(addAccountSpy, "add").mockRejectedValueOnce(error);
+
+    simulateValidSubmit();
+
+    await waitFor(() => {
+      const mainError = screen.queryByTestId("main-error");
+      expect(mainError.textContent).toBe(error.message);
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
+    });
+  });
+
+  it("should call SaveAccessToken on success", async () => {
+    const { addAccountSpy, saveAccessTokenMock } = factorySetupTestHelper();
+
+    simulateValidSubmit();
+
+    await waitFor(() => {
+      expect(saveAccessTokenMock.accessToken).toBe(
+        addAccountSpy.account.accessToken
+      );
+      expect(history.index).toBe(0);
+      expect(history.location.pathname).toBe("/");
+    });
+  });
+
+  it("should present error if SaveAccessToken fails", async () => {
+    const { saveAccessTokenMock } = factorySetupTestHelper();
+
+    const error = new EmailInUseError();
+    jest.spyOn(saveAccessTokenMock, "save").mockRejectedValueOnce(error);
+
+    simulateValidSubmit();
+
+    await waitFor(() => {
+      const mainError = screen.queryByTestId("main-error");
+      expect(mainError.textContent).toBe(error.message);
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
+    });
+  });
+
+  it("should go to login page", () => {
+    factorySetupTestHelper();
+
+    const comeToLoginLink = screen.getByRole("link", {
+      name: /Voltar para Login/i,
+    });
+    fireEvent.click(comeToLoginLink);
+
+    expect(history.index).toBe(1);
+    expect(history.location.pathname).toBe("/login");
   });
 });

@@ -2,24 +2,29 @@ import React, { useState, useEffect } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
-import { AddAccount } from "@/domain/usecases";
+import { AddAccount, ISaveAccessToken } from "@/domain/usecases";
 
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
 import { Button } from "@/presentation/atoms/Button";
-
 import { LoginHeader } from "@/presentation/molecules/LoginHeader";
-import { IValidation } from "@/presentation/protocols/validation";
 import { FormStatus } from "@/presentation/molecules/FormStatus";
+import { IValidation } from "@/presentation/protocols/validation";
 
 import Styles from "../shared/styles.module.scss";
 
 type TSignUpProps = {
   validation: IValidation;
   addAccount: AddAccount;
+  saveAccessToken: ISaveAccessToken;
 };
 
-export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
+export const SignUp = ({
+  validation,
+  addAccount,
+  saveAccessToken,
+}: TSignUpProps) => {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     isLoading: false,
     errorMessage: "",
@@ -57,21 +62,36 @@ export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
     formState.nameError ||
     formState.passwordConfirmationError;
 
-  const isInvalidForm = formState.isLoading;
+  const isInvalidForm =
+    formState.isLoading ||
+    formState.emailError ||
+    formState.passwordError ||
+    formState.nameError ||
+    formState.passwordConfirmationError;
 
   const handleSubmitForm = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     event.preventDefault();
 
-    if (isInvalidForm) return;
-    setFormState((previous) => ({ ...previous, isLoading: true }));
-    await addAccount.add({
-      name: formState.name,
-      email: formState.email,
-      password: formState.password,
-      passwordConfirmation: formState.passwordConfirmation,
-    });
+    try {
+      if (isInvalidForm) return;
+      setFormState((previous) => ({ ...previous, isLoading: true }));
+      const account = await addAccount.add({
+        name: formState.name,
+        email: formState.email,
+        password: formState.password,
+        passwordConfirmation: formState.passwordConfirmation,
+      });
+      await saveAccessToken.save(account.accessToken);
+      navigate("/", { replace: true });
+    } catch (error) {
+      setFormState({
+        ...formState,
+        isLoading: false,
+        errorMessage: error.message,
+      });
+    }
   };
 
   return (
@@ -133,7 +153,9 @@ export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
           className={Styles.submit}
         />
 
-        <span className={Styles.link}>Voltar para Login</span>
+        <Link to="/login" className={Styles.link}>
+          Voltar para Login
+        </Link>
         <FormStatus
           isLoading={formState.isLoading}
           errorMessage={formState.errorMessage}
