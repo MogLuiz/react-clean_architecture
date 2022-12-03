@@ -171,4 +171,15 @@ describe("<SignUp Page/>", () => {
 
     expect(addAccountSpy.callsCount).toBe(1);
   });
+
+  it("should not call Authentication if form is invalid", () => {
+    const validationError = faker.random.words();
+    const { addAccountSpy } = factorySetupTestHelper({ validationError });
+
+    const form = screen.getByRole("form");
+    Helper.populateFormField("email");
+    fireEvent.submit(form);
+
+    expect(addAccountSpy.callsCount).toBe(0);
+  });
 });
