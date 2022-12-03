@@ -7,10 +7,9 @@ import { AddAccount, ISaveAccessToken } from "@/domain/usecases";
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
 import { Button } from "@/presentation/atoms/Button";
-
 import { LoginHeader } from "@/presentation/molecules/LoginHeader";
-import { IValidation } from "@/presentation/protocols/validation";
 import { FormStatus } from "@/presentation/molecules/FormStatus";
+import { IValidation } from "@/presentation/protocols/validation";
 
 import Styles from "../shared/styles.module.scss";
 
@@ -154,7 +153,9 @@ export const SignUp = ({
           className={Styles.submit}
         />
 
-        <span className={Styles.link}>Voltar para Login</span>
+        <Link to="/login" className={Styles.link}>
+          Voltar para Login
+        </Link>
         <FormStatus
           isLoading={formState.isLoading}
           errorMessage={formState.errorMessage}
