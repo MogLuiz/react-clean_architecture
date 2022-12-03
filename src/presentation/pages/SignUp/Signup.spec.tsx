@@ -242,4 +242,16 @@ describe("<SignUp Page/>", () => {
       expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
     });
   });
+
+  it("should go to login page", () => {
+    factorySetupTestHelper();
+
+    const comeToLoginLink = screen.getByRole("link", {
+      name: /Voltar para Login/i,
+    });
+    fireEvent.click(comeToLoginLink);
+
+    expect(history.index).toBe(1);
+    expect(history.location.pathname).toBe("/login");
+  });
 });
