@@ -227,4 +227,19 @@ describe("<SignUp Page/>", () => {
       expect(history.location.pathname).toBe("/");
     });
   });
+
+  it("should present error if SaveAccessToken fails", async () => {
+    const { saveAccessTokenMock } = factorySetupTestHelper();
+
+    const error = new EmailInUseError();
+    jest.spyOn(saveAccessTokenMock, "save").mockRejectedValueOnce(error);
+
+    simulateValidSubmit();
+
+    await waitFor(() => {
+      const mainError = screen.queryByTestId("main-error");
+      expect(mainError.textContent).toBe(error.message);
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
+    });
+  });
 });
