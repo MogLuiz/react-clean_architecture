@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
-import { AddAccount } from "@/domain/usecases";
+import { AddAccount, ISaveAccessToken } from "@/domain/usecases";
 
 import { Footer } from "@/presentation/atoms/Footer";
 import { Input } from "@/presentation/atoms/Input";
@@ -17,9 +17,15 @@ import Styles from "../shared/styles.module.scss";
 type TSignUpProps = {
   validation: IValidation;
   addAccount: AddAccount;
+  saveAccessToken: ISaveAccessToken;
 };
 
-export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
+export const SignUp = ({
+  validation,
+  addAccount,
+  saveAccessToken,
+}: TSignUpProps) => {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     isLoading: false,
     errorMessage: "",
@@ -72,12 +78,14 @@ export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
     try {
       if (isInvalidForm) return;
       setFormState((previous) => ({ ...previous, isLoading: true }));
-      await addAccount.add({
+      const account = await addAccount.add({
         name: formState.name,
         email: formState.email,
         password: formState.password,
         passwordConfirmation: formState.passwordConfirmation,
       });
+      await saveAccessToken.save(account.accessToken);
+      navigate("/", { replace: true });
     } catch (error) {
       setFormState({
         ...formState,
