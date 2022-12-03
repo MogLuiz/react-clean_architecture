@@ -57,7 +57,12 @@ export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
     formState.nameError ||
     formState.passwordConfirmationError;
 
-  const isInvalidForm = formState.isLoading;
+  const isInvalidForm =
+    formState.isLoading ||
+    formState.emailError ||
+    formState.passwordError ||
+    formState.nameError ||
+    formState.passwordConfirmationError;
 
   const handleSubmitForm = async (
     event: React.FormEvent<HTMLFormElement>
