@@ -69,14 +69,22 @@ export const SignUp = ({ validation, addAccount }: TSignUpProps) => {
   ): Promise<void> => {
     event.preventDefault();
 
-    if (isInvalidForm) return;
-    setFormState((previous) => ({ ...previous, isLoading: true }));
-    await addAccount.add({
-      name: formState.name,
-      email: formState.email,
-      password: formState.password,
-      passwordConfirmation: formState.passwordConfirmation,
-    });
+    try {
+      if (isInvalidForm) return;
+      setFormState((previous) => ({ ...previous, isLoading: true }));
+      await addAccount.add({
+        name: formState.name,
+        email: formState.email,
+        password: formState.password,
+        passwordConfirmation: formState.passwordConfirmation,
+      });
+    } catch (error) {
+      setFormState({
+        ...formState,
+        isLoading: false,
+        errorMessage: error.message,
+      });
+    }
   };
 
   return (
